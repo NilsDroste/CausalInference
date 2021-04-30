@@ -51,6 +51,50 @@
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}{Intuition}
+		Consider a situation where the untreated are very different from the treated:
+		\\ \vspace*{.05cm}
+		\begin{center}
+			\includegraphics[width=\textwidth]{Matching.jpg}
+			\\\tiny{ Image source: \cite{Schleicher2020}}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}{basic conditions}
+		The classical overarching conditions for robust causal inference:
+		\\ \vspace*{.25cm}
+		\begin{itemize}
+			\item stable unit treatment value assumption (SUTVA)
+			\begin{itemize}
+				\item treating one individual unit does not affect another's (potential) outcome
+				\item treatment is comparable [no (strong) variation in treatment]
+			\end{itemize}
+			\item<2-> unconfoundedness (strong ignorability)
+			\begin{itemize}
+				\item<2-> $(Y(1), Y(0)) \perp T$: treatment assignment is independent of the outcomes
+				\item<2-> i.e. no omitted variable bias (recall the storch example)
+				\item<2-> or, at least, conditional unconfoundedness  $(Y(1), Y(0)) \perp T {}|{} X$
+			\end{itemize}
+		\end{itemize}
+		\vspace*{.25cm} \onslide<3-> {$\rightarrow \pi(X_i) = Pr(D_i = 1 | X_i)$ or \textit{propensity score} can be used for matching}
+		\\ \onslide<4> {$\rightarrow$ but should maybe not (\cite{King2019}), we will see alternatives }
+	\end{frame}
+% ------------------------------------------------------------------------------
+\section{Matching}
+
+	\begin{frame}{Overview}
+		Here is a general overview of possible matching methods
+		\\ \vspace*{.05cm}
+		\begin{center}
+			\includegraphics[width=\textwidth]{MatchingMethods.png}
+			\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+		\end{center}
+	\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{Synthetic Controls}
+
+
 % ------------------------------------------------------------------------------
 	\begin{frame}[t,allowframebreaks]{References}
 		% [t,allowframebreaks]
