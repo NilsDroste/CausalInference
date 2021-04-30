@@ -4,7 +4,7 @@
 ###########################################################################
 ###########################################################################
 # Load data
-grooms <- haven::read_dta(here("../createddata/grooms_st_2.dta"))
+grooms <- haven::read_dta(here("createddata","grooms_st_2.dta"))
 # Drop all units that are "always treated"
 grooms <- subset(grooms, (grooms$authyear>=1977) | (is.na(grooms$authyear)==1))
 grooms$treat <- 1 - base::is.na(grooms$authyear)

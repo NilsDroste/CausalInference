@@ -409,9 +409,9 @@
 
 	\subsection{intuition}
 		\begin{frame}{notation}
-			Turns out the 2WFE DiD estimator is a weighted average of all these comparisons
+			Turns out: 2WFE DiD estimator is a weighted average of these comparisons
 			\begin{center}
-				\includegraphics[width=.5\textwidth]{GB_staggeredDiff.jpg}
+				\includegraphics[width=.575\textwidth]{GB_staggeredDiff.jpg}
 				\\ \tiny{Bacon decomposition theorem. Image source: \cite{Goodman-Bacon2018}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
 			\end{center}
 		\end{frame}
@@ -426,7 +426,7 @@
 			\end{frame}
 
 	\subsection{solutions}
-		\begin{frame}{Proposed solutions}
+		\begin{frame}{Proposed solutions I}
 			Several works on the issue:
 			\\ \vspace*{.25cm}
 			\begin{itemize}
@@ -437,16 +437,24 @@
 					\end{itemize}
 				\item<3-> \cite{Goodman-Bacon2018}
 					\begin{itemize}
-						\item a time-in-treatment weighted DiD
+						\item a time-in-treatment weighted DiD, fixing the weights to gain balance
+						\item R package \href{https://cran.r-project.org/web/packages/bacondecomp/index.html}{\underline{\smash{bacondecomp}}}
 					\end{itemize}
-				\item<4-> \cite{Callaway2020}
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{Proposed solutions II}
+			Several works on the issue:
+			\\ \vspace*{.25cm}
+			\begin{itemize}
+				\item<2-> \cite{Callaway2020}
 					\begin{itemize}
-						\item semiparametric, bootstrapped inference with pre-intervention conditioning on co-variates
+						\item bootstrapped inference with pre-intervention conditioning on co-variates
 						\item R package \href{https://cran.r-project.org/web/packages/did/vignettes/did-basics.html}{\underline{\smash{did}}}
 					\end{itemize}
-				\item<5-> \cite{Sun2020a}
+				\item<3-> \cite{Sun2020a}
 					\begin{itemize}
-						\item a time-to-treatment (cohort) weighted approach
+						\item time-to-treatment (cohort) weighted approach, comparing to never-treated
 						\item implemented in \href{https://cran.r-project.org/web/packages/fixest/vignettes/fixest_walkthrough.html}{\underline{\smash{fixest}}} R package
 					\end{itemize}
 			\end{itemize}
@@ -473,7 +481,7 @@
 			However, all these approaches, assume (to some extent) parallel trends
 			\\ \vspace*{.25cm}
 			\begin{itemize}
-				\item Roth
+				\item Jonathan Roth \citeyear{Roth2021}
 					\begin{itemize}
 						\item test for parallel-trends, R package \href{https://github.com/jonathandroth/pretrends}{\underline{\smash{pretends}}}
 						\item robust inference strategy under non-parralel trends \cite{Rambachan2020}, R package \href{https://github.com/asheshrambachan/HonestDiD}{\underline{\smash{HonestDiD}}}
@@ -486,7 +494,7 @@
 			\begin{itemize}
 				\item compare treated individual (units) with a reference group
 				\item who we compare to whom deserves special attention
-				\item constantly being developed further
+				\item software solutions available
 			\end{itemize}
 		\end{frame}
 

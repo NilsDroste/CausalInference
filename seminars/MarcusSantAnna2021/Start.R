@@ -20,3 +20,5 @@ download.file(paste0("https://dvn-cloud.s3.amazonaws.com/10.7910/DVN/TXB0ZO/1745
 
 #extract RAR to current working directory using p7zip (given you have the 7z.exe path in your PATH)
 system(paste("7z x", temp, paste0("-o", getwd())))
+
+# but also this may cause a cryptic error message.
