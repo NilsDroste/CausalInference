@@ -41,62 +41,327 @@
 % ------------------------------------------------------------------------------
 \section{Introduction}
 
-	\begin{frame}{Causal Inference from observational data}
-		\textbf{\textit{Synopsis}}: Today, we will be looking into methods that help us find (aka \textit{match}) or simulate (aka \textit{synthesize}) a control group for  inferring causal effects from observational data, and its recent developments \\ \vspace*{.25cm}
-		In particular, we will develop an understanding of\\ \vspace*{.25cm}
-		\begin{itemize}
-			\item<2-> matching approaches
-			\item<3-> synthetic controls
-			\item<4-> machine-based learning methods
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}{Intuition}
-		Consider a situation where the untreated are very different from the treated:
-		\\ \vspace*{.05cm}
-		\begin{center}
-			\includegraphics[width=\textwidth]{Matching.jpg}
-			\\\tiny{ Image source: \cite{Schleicher2020}}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}{basic conditions}
-		The classical overarching conditions for robust causal inference:
-		\\ \vspace*{.25cm}
-		\begin{itemize}
-			\item stable unit treatment value assumption (SUTVA)
+		\begin{frame}{Causal Inference from observational data}
+			\textbf{\textit{Synopsis}}: Today, we will be looking into methods that help us find (aka \textit{match}) or simulate (aka \textit{synthesize}) a control group for  inferring causal effects from observational data, and its recent developments \\ \vspace*{.25cm}
+			In particular, we will develop an understanding of\\ \vspace*{.25cm}
 			\begin{itemize}
-				\item treating one individual unit does not affect another's (potential) outcome
-				\item treatment is comparable [no (strong) variation in treatment]
+				\item<2-> matching approaches
+				\onslide<3->{
+					\begin{itemize}
+						\item classical
+						\item machine-based learning
+					\end{itemize}
+					}
+				\item<4> synthetic controls
+
 			\end{itemize}
-			\item<2-> unconfoundedness (strong ignorability)
+		\end{frame}
+
+		\begin{frame}{Intuition}
+			Consider a situation where the untreated are very different from the treated:
+			\\ \vspace*{.05cm}
+			\begin{center}
+				\includegraphics[width=\textwidth]{Matching.jpg}
+				\\\tiny{ Image source: \cite{Schleicher2020}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Intuition}
+			Consider a situation where the untreated are very different from the treated:
+			\\ \vspace*{.05cm}
+			\begin{center}
+				\includegraphics[width=\textwidth]{MatchingDef.jpg}
+				\\\tiny{ Image source: Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+			\end{center}
+			\onslide<2> {$\rightarrow$ \underline{matching is a \textbf{\textit{pre-analytical procedure}}, allowing unbiased inference.}}
+		\end{frame}
+
+		\begin{frame}{Procedure}
+			\begin{center}
+				\only<1>{\includegraphics[width=.7\textwidth]{MatchingProcedure1.jpg}}
+				\onslide<2>{\includegraphics[width=.7\textwidth]{MatchingProcedure2.jpg}}
+				\\\tiny{ Image source: \cite{Schleicher2020}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Basic conditions}
+			The classical overarching conditions for robust causal inference:
+			\\ \vspace*{.25cm}
 			\begin{itemize}
-				\item<2-> $(Y(1), Y(0)) \perp T$: treatment assignment is independent of the outcomes
-				\item<2-> i.e. no omitted variable bias (recall the storch example)
-				\item<2-> or, at least, conditional unconfoundedness  $(Y(1), Y(0)) \perp T {}|{} X$
+				\item stable unit treatment value assumption (SUTVA)
+				\begin{itemize}
+					\item treating one individual unit does not affect another's (potential) outcome
+					\item treatment is comparable [no (strong) variation in treatment]
+				\end{itemize}
+				\item<2-> unconfoundedness (strong ignorability)
+				\begin{itemize}
+					\item<2-> $(Y(1), Y(0)) \perp T$: treatment assignment is independent of the outcomes
+					\item<2-> i.e. no omitted variable bias (recall the storch example)
+					\item<2-> or, at least, conditional unconfoundedness  $(Y(1), Y(0)) \perp T {}|{} X$
+				\end{itemize}
 			\end{itemize}
-		\end{itemize}
-		\vspace*{.25cm} \onslide<3-> {$\rightarrow \pi(X_i) = Pr(D_i = 1 | X_i)$ or \textit{propensity score} can be used for matching}
-		\\ \onslide<4> {$\rightarrow$ but should maybe not (\cite{King2019}), we will see alternatives }
-	\end{frame}
+			\vspace*{.25cm} \onslide<3-> {$\rightarrow \pi(X_i) = Pr(D_i = 1 | X_i)$ or \textit{propensity score} can be used for matching}
+			\\ \onslide<4> {$\rightarrow$ but should maybe not (\cite{King2019}), we will see alternatives }
+		\end{frame}
+
 % ------------------------------------------------------------------------------
 \section{Matching}
 
-	\begin{frame}{Overview}
-		Here is a general overview of possible matching methods
-		\\ \vspace*{.05cm}
-		\begin{center}
-			\includegraphics[width=\textwidth]{MatchingMethods.png}
-			\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
-		\end{center}
-	\end{frame}
+		\begin{frame}{Overview}
+			Here is a general overview of possible matching methods
+			\\ \vspace*{.05cm}
+			\begin{center}
+				\includegraphics[width=\textwidth]{MatchingMethods.png}
+				\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Notation}
+			Consider that we aim to estimate \textit{conditional average treatment effect} (CATE) (cf. \cite{Abrevaya2015})
+			\begin{equation}
+				CATE = E(Y(1)-Y(0)|X=x)
+			\end{equation}
+			\only<2>{How to find the sufficiently similar subsamples?}
+			\onslide<3->{
+				\hspace*{-.3cm} King and Nielsen (\citeyear{King2019}) formulate a general pruning (\textit{matching}) function $M$:
+				\begin{equation}
+					X_\ell = M(X|A_\ell, T_i = 1, T_j = 0, \delta) \equiv M(X|A_\ell) \subseteq X
+				\end{equation}
+				\\ \vspace*{.25cm}
+				providing $X_\ell$, subset of matched observation based on condition $A_\ell$.
+				}
+			\\ \vspace*{.25cm}
+			\onslide<4> {
+				$\rightarrow$ in what follows we will look at different pruning method $\ell$ \\
+				\hspace*{.3cm} to produce the best matched subset $\delta$.
+				}
+		\end{frame}
+
+	\subsection{exact match}
+		\begin{frame}{Exact matching}
+			For exact matching we find exactly equal pairs
+			\\ \vspace*{.5cm}
+			\begin{equation}
+				X_{EM} = M(X|X_i = X_j)
+			\end{equation}
+			\\ \vspace*{.5cm}
+			\textit{Note:} $X$ can be a vector of covariates.
+		\end{frame}
+
+		\begin{frame}{Coarsened Exact Matching (CEM)}
+			For coarsened exact matching we approximate
+			\\ \vspace*{.5cm}
+			\begin{equation}
+				X_{CEM} = M(X|C_\delta(X_i) = C_\delta(X_i))
+			\end{equation}
+			\\ \vspace*{.5cm}
+			where $C_\delta$ is a vector of same dimensions as $X$, but coarsened values, \\
+			e.g. at "\textit{natural breakpoints}" such as years in one school type, levels of income, etc.
+		\end{frame}
+
+	\subsection{distance match}
+		\begin{frame}{Mahalanobis Distance Method (MDM)}
+			For multidimensional data, we can identify nearest neighbours in an n-dimensional space.
+			\begin{center}
+				\includegraphics[width=\textwidth]{MalahanobisDistance.png}
+				\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Propensity score matching (PSM)}
+			Else, we can estimate probability of being treated, aka propensity score \\
+			 $\pi(X_i) = Pr(D_i = 1 | X_i)$ by logistic regression
+			\begin{center}
+				\includegraphics[trim={0 0 0 4.5cm},clip,width=\textwidth]{PropScore.png}
+				\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}[fragile]{example}
+				\begin{verbatim}
+				library(tidyverse)
+				library(MatchIt)
+
+				data("lalonde")
+				lalonde <- lalonde %>% as_tibble()
+
+				m.out <- matchit(treat ~ age + educ + race + married +
+				                 nodegree + re74 + re75, data = lalonde,
+				                 method = "full")
+			\end{verbatim}
+		\end{frame}
+
+		\begin{frame}[fragile]{example}
+			\begin{verbatim}
+				> m.out
+				A matchit object
+				 - method: Optimal full matching
+				 - distance: Propensity score
+				             - estimated with logistic regression
+				 - number of obs.: 614 (original), 614 (matched)
+				 - target estimand: ATT
+				 - covariates: age, educ, race, married, nodegree, re74, re75
+ 	 		\end{verbatim}
+		\end{frame}
+
+		\begin{frame}[fragile]{example}
+			\begin{verbatim}
+					plot(m.out, type = "ecdf", which.xs = c("age", "re74", "married"))
+			\end{verbatim}
+			\includegraphics[width=.85\textwidth]{eCDF.png}
+				\begin{center}
+				\tiny{ Code source: \href{https://kosukeimai.github.io/MatchIt/articles/assessing-balance.html}{\underline{\smash{Greifer 2020}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}[fragile]{example}
+			\begin{verbatim}
+				psFormula <- formula(treat ~ age + educ + race
+				                     + married + nodegree + re74 + re75)
+
+				lalonde$p.score <-
+				  glm(psFormula, data = lalonde,
+				      family = "binomial")$fitted.values
+
+				lalonde$att.weights <-
+				  with(lalonde, treat + (1-treat)*p.score/(1-p.score))
+			\end{verbatim}
+		\end{frame}
+
+		\begin{frame}[fragile]{example}
+			\begin{verbatim}
+				bal.plot(f.build("treat", covs0),
+				         data = lalonde, var.name = "p.score",
+				         weights = "att.weights", distance = "p.score",
+				         method = "weighting", which = "both")
+			\end{verbatim}
+			\begin{center}
+				\includegraphics[width=\textwidth]{pscore.png}
+				\tiny{Code source: \href{https://mran.microsoft.com/snapshot/2017-08-06/web/packages/cobalt/vignettes/cobalt_basic_use.html}{\underline{\smash{Greifer 2020}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Intermediate discussion}
+			There is a bit of critique on PSM
+			\begin{itemize}
+				\item King and Nielsen (\citeyear{King2019})
+				\begin{itemize}
+					\item \textit{"PSM is ... uniquely blind to the often large portion of imbalance"}
+					\item \textit{"easy to avoid by switching to one of the other popular methods of matching"}
+					\item i.e.: CEM and MDM
+				\end{itemize}
+				\item Sizemore and Alkurdi (\citeyear{Sizemore2019})
+				\begin{itemize}
+					\item test PSM against machine learning based methods
+					\item logistic PSM $\succ$ random forest PSM  $\succ$ genetic matching
+					\item CEM ???
+				\end{itemize}
+			\end{itemize}
+		\end{frame}
+
+	\subsection{machine-learning}
+		\begin{frame}{Random forest (RF)}
+			RF are multiple regression trees classifying the data by partitioning
+			\begin{center}
+				\includegraphics[trim={0 .75cm 0 1.5cm}, clip, width=.7\textwidth]{RandomForest.png}
+				\\\tiny{Code source: \href{https://en.wikipedia.org/wiki/Random_forest}{\underline{\smash{Wikipedia}}}}
+			\end{center}
+			We can use this to predict treatment (aka propensity scores)
+		\end{frame}
+
+		\begin{frame}{eXtreme Gradient Boosting (XGBoost)}
+			Machine learning such as XGBoost or even ensambles can also be used to
+			\begin{center}
+				\includegraphics[width=.9\textwidth]{XGBoost.png}
+				\\\tiny{Code source: \href{https://blog.quantinsti.com/xgboost-python/}{\underline{\smash{Quant Insti}}}}
+			\end{center}
+			$\rightarrow$ predict treatment (aka propensity scores)
+		\end{frame}
+
+		\begin{frame}{Genetic matching}
+			Genetic Matching combines PSM and MDM
+			\begin{equation}
+				GMD(X_i, X_j, W) = \sqrt{(X_i)^T(S^{-\frac{1}{2}})^TWS^{-\frac{1}{2}}(X_i-X_j)}
+			\end{equation}
+			\begin{center}
+				\includegraphics[width=.3\textwidth]{GenMatch.png}
+					\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+			\end{center}
+		\end{frame}
+
+	\subsection{model comparison}
+		\begin{frame}{comparison - fitting distributions}
+			\begin{center}
+				\includegraphics[width=.9\textwidth]{comparison.png}
+				\\\tiny{plotting model comparisons for coviarates of the lalonde data set}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{comparison - mean absolute error}
+			\begin{center}
+				\includegraphics[width=\textwidth]{Modelcomparison.png}
+				\\\tiny{plotting model comparisons for the lalonde data set, cf. \cite{Colson2016}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{comparison - summary}
+			\begin{itemize}
+				\item<1-> for the comparison above I used nearest neighbour matching, reducing sample size
+				\item<2-> maximizing post-match balance does not necessarily improve explanatory model power (\cite{Colson2016})
+				\item<3-> possibly both sample size and balance need to be taken into account (\cite{King2017})
+				\item<4-> latest approaches include almost exact matching (\cite{Dieng2018,Dieng2021}), text matching (\cite{Roberts2020a}), generalized optimal matching (\cite{Kallus2020})
+				\item<5-> R packages include \href{https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html}{\underline{\smash{MatchIt}}}, \href{http://sekhon.berkeley.edu/matching/}{\underline{\smash{Matching}}}, and \href{https://github.com/insongkim/PanelMatch}{\underline{\smash{PanelMatch}}}
+				\item<6> for the debate around propensity score matching (\cite{King2019}), see also \href{https://p-hunermund.com/2019/02/06/why-so-much-hate-against-propensity-score-matching/amp/)}{\underline{\smash{Hünermund, (2019)}}}
+			\end{itemize}
+		\end{frame}
 
 % ------------------------------------------------------------------------------
 \section{Synthetic Controls}
 
+	\subsection{intuition}
+
+		\begin{frame}{a case}
+			What if we do only have one treated unit?
+			\begin{center}
+				\includegraphics[width=.5\textwidth]{SynthControl.jpg}
+				\\\tiny{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{and an idea}
+			How about we compare to a weighted average of untreated?
+			\begin{center}
+				\includegraphics[width=.5\textwidth]{SynthControl2.jpg}
+				\\\tiny{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{and a notation}
+			\begin{equation}
+				\hat Y_{t,post(0)}  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
+			\end{equation}
+			\\ \vspace*{1.5cm}
+			"{In other words, the imputed control outcome for the treated unit is a linear combination of the control units, with intercept $\mu$ and weights $w_i$ for control unit $i$.}" \cite{Doudchenko2016}
+		\end{frame}
+
+		\begin{frame}{the process}
+			We compare the treated to the non-treated
+			\begin{center}
+				\includegraphics[width=.5\textwidth]{SynthControl3.jpg}
+				\\\tiny{A noisy control group, cf. \cite{Abadie2010}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{the process}
+			And compute a synthetic control out of a weighted set of the untreated
+			\begin{center}
+				\includegraphics[width=.5\textwidth]{SynthControl4.jpg}
+				\\\tiny{California vs SynthCal, cf. \cite{Abadie2010}}
+			\end{center}
+		\end{frame}
 
 % ------------------------------------------------------------------------------
-	\begin{frame}[t,allowframebreaks]{References}
+	\begin{frame}[t, allowframebreaks]{References}
 		% [t,allowframebreaks]
 	  \printbibliography
 	\end{frame}
