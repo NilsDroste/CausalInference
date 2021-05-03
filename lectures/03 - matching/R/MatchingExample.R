@@ -203,7 +203,7 @@ cowplot::plot_grid(ageplot, educplot, raceplot, marriedplot, nodegreeplot, re74p
 zeFormula <- formula(re78 ~ age + educ + educ^2 + race + nodegree + married + re74 + re75 + treat)
 
 get_estimated_treatment <- function(matching_output, zeFormula){
-  z.out <- zelig(zeFormula , data = match.data(matching_output), model = "ls", bootstrap=TRUE)
+  z.out <- zelig(zeFormula , data = match.data(matching_output), model = "ls")
   # x.out <- setx(z.out, data = match.data(matching_output, "treat"), cond = TRUE)
   # s.out <- sim(z.out, x = x.out)
   return(z.out)
@@ -243,3 +243,21 @@ MSEplot <- to_plot %>% ggplot(aes(y=MSE, x = reorder(model, -MSE), fill = model)
 all <- lm(re78 ~ age + educ + race + married + nodegree + re74 + re75 + treat, data=lalonde)
 summary(all)
 lmtest::coeftest(all, vcov = sandwich::vcovHAC(all))
+
+
+# TASK: compute ATT and ATE
+taskFormula <- formula(re78 ~ age + educ + educ^2 + race + nodegree + married + re74 + re75)
+
+att_mod <- zelig(taskFormula , data = match.data(cemMatching, "treat"), model = "ls")
+att_est <- att_mod$get_predict() %>% unlist()
+
+ateu_mod <- zelig(taskFormula , data = match.data(cemMatching, "control"), model = "ls")
+ateu_est <- ateu_mod$get_predict() %>% unlist()
+
+ate_point_est <- c(
+  ate = mean(att_est)-mean(ateu_est),
+  sd = sqrt((length(att_est -1) * sd(att_est)^2 + length(ateu_est -1) * sd(ateu_est)^2) / (length(att_est)) + length(ateu_est) - 2 ) * sqrt(1/length(att_est) + 1/length(ateu_est))
+)
+# for calc of sd of differences of means see https://stats.stackexchange.com/questions/302445/standard-error-of-difference 
+
+t.test(att_est, ateu_est)

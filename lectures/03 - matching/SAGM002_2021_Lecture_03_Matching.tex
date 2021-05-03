@@ -315,20 +315,29 @@
 			\end{itemize}
 		\end{frame}
 
+	\subsection{example}
+		\begin{frame}{an example}
+			Ferraro and Hanauer (\citeyear{Ferraro2014}) use matching approach (MDM) to assess the effect of protected areas on poverty reduction
+			\begin{center}
+				\includegraphics[trim={0 0 0 3.5cm}, clip, width=.6\textwidth]{Hanauer.jpg}
+				\\\tiny{Causal model of PA on poverty effects, source: \cite{Ferraro2014}}
+			\end{center}
+		\end{frame}
+
 % ------------------------------------------------------------------------------
 \section{Synthetic Controls}
 
 	\subsection{intuition}
 
-		\begin{frame}{a case}
-			What if we do only have one treated unit?
+		\begin{frame}{Synthetic Controls}
+			What if we do only have \textit{one} treated unit?
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl.jpg}
 				\\\tiny{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
 			\end{center}
 		\end{frame}
 
-		\begin{frame}{and an idea}
+		\begin{frame}{a case and an idea}
 			How about we compare to a weighted average of untreated?
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl2.jpg}
@@ -338,10 +347,10 @@
 
 		\begin{frame}{and a notation}
 			\begin{equation}
-				\hat Y_{t,post(0)}  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
+				\hat Y_{t,post}(0)  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
 			\end{equation}
 			\\ \vspace*{1.5cm}
-			"{In other words, the imputed control outcome for the treated unit is a linear combination of the control units, with intercept $\mu$ and weights $w_i$ for control unit $i$.}" \cite{Doudchenko2016}
+			"\textit{In other words, the imputed control outcome for the treated unit is a linear combination of the control units, with intercept $\mu$ and weights $w_i$ for control unit $i$.}" (\cite{Doudchenko2016}: 7)
 		\end{frame}
 
 		\begin{frame}{the process}
@@ -353,10 +362,97 @@
 		\end{frame}
 
 		\begin{frame}{the process}
-			And compute a synthetic control out of a weighted set of the untreated
+			and compute the difference to a counterfactual weighted set of untreated
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl4.jpg}
 				\\\tiny{California vs SynthCal, cf. \cite{Abadie2010}}
+			\end{center}
+		\end{frame}
+
+	\subsection{estimation}
+		\begin{frame}{estimation}
+			Recall the ordinary least square estimate (OLS)
+		\begin{center}
+			\includegraphics[trim={6.5cm 5.25cm 5cm 5cm}, clip, width=.55\textwidth]{OLS.jpg}
+				\\\tiny{OLS, img source: \href{https://serokell.io/blog/regression-analysis-overview}{\underline{\smash{Gavrilova, 2020}}}}
+		\end{center}
+		\end{frame}
+
+		\begin{frame}{estimation}
+			For
+			\begin{math}
+				\hat Y_{t,post}(0)  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
+			\end{math}
+			\\ \vspace*{.5cm}
+			$\mu$ and $w_i$ can, in principle, be estimate with OLS (cf. \cite{Doudchenko2016})
+			\begin{equation}
+				(\hat{\mu}^{ols}, \hat{w}^{ols}) = \arg\min_{\mu, w} \sum_{s=1}^{T_0}\left({Y_{0,T_0-s+1}^{obs} - \mu - \sum_{i=1}^{N}{w_i} \cdot Y_{0,T_0-s+1}^{obs} }\right)^2
+			\end{equation}
+			\\ \vspace*{.25cm}
+			\onslide<2> Abadie et al. \citeyear{Abadie2010} impose conditions, $\mu= 0$, $\sum_{i=1}^{N}{w_i}=1$, and $w_i \geq 0{ }\forall i$.
+		\end{frame}
+
+		\begin{frame}{estimation}
+			For covariate vector {x}
+			\\ \vspace*{.5cm}
+			$\mu$ and $w_i$ we would also want to minimize (cf. \cite{Doudchenko2016})
+			\begin{equation}
+				\| Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \|_2^2 = \left( Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \right)^T \left( Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \right)
+			\end{equation}
+			\\ \vspace*{.25cm}
+			or, in simpler terms
+			\begin{math}
+				\| X_{treat} - X_{control} W \|
+			\end{math}
+			which resembles a balancing approach (á la matching). Here, this mathing is often performed on lagged outcomes $Y_{t-(1,...,T)}$.
+			\\ \vspace*{.25cm}
+			\onslide<3> See Doudchenko and Imbens (\citeyear{Doudchenko2016}) for a balanced, cross-validated, elastic net type penalty approach, combining Lasso and ridge regressions to regularize $w$.
+		\end{frame}
+
+	\begin{current devs}
+		\begin{frame}{current development}
+			Arkhangelsky et al. \citeyear{Arkhangelsky2019} suggest a synthetic diff-in-diff approach, where \\ \vspace*{.15cm}
+			SynthControl:
+			\begin{equation}
+				(\hat{\mu}, \hat{\beta}, \hat{\tau}^{sc}) = \arg\min_{\mu, \beta, \tau}  \sum_{1=1}^{N} \sum_{1=1}{T} \left(Y_{it} - \mu - \beta_t - W_{it}\tau \right)^2 \hat{w}_i^{SC}
+			\end{equation}
+			DiD:
+			\begin{equation}
+				(\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\tau}^{did}) = \arg\min_{\mu, \alpha, \beta, \tau}  \sum_{1=1}^{N} \sum_{1=1}{T} \left(Y_{it} - \mu - \alpha_i -\beta_t - W_{it}\tau \right)^2
+			\end{equation}
+			SynthDiD:
+			\begin{equation}
+				(\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\tau}^{sdid}) = \arg\min_{\mu, \beta, \tau}  \sum_{1=1}^{N} \sum_{1=1}{T} \left(Y_{it} - \mu - \alpha_i -\beta_t - W_{it}\tau \right)^2 \hat{w}_i \hat{\lambda}_t
+			\end{equation}
+		\end{frame}
+
+		\begin{frame}{intermediate summary}
+			A synthetic control approach allows us to \\ \vspace*{.5cm}
+			\begin{itemize}
+				\item compare a single treated unit group with an untreated quasi-counterfactual
+				\item you can compute placebo tests for the effect on an untreated unit
+				\item so far, has not been \text{widely} applied (for examples see \cite{Abadie2020}
+				\item I think it underestimated (i.e. by applied researchers)
+			\end{itemize}
+		\end{frame}
+
+	\subsection{example}
+		\begin{frame}{software}
+			available packages
+			\begin{itemize}
+				\item \href{https://cran.r-project.org/web/packages/Synth/index.html}{\underline{\smash{Synth}}}
+				\item \href{https://github.com/synth-inference/synthdid}{\underline{\smash{synthdid}}}
+				\item \href{https://github.com/hollina/scul/}{\underline{\smash{scul}}}
+				\item \href{https://yiqingxu.org/software/gsynth/gsynth_examples.html}{\underline{\smash{gsynth}}}
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{an example}
+			Bayer and Aklin (\citeyear{Bayer2020}) use synthetic controls to assess the effect of EU Emission Trading System (ETS) on CO$_2$ emissions
+			\begin{center}
+				\only<1>{\begin{center}\includegraphics[width=.5\textwidth]{Bayer1.jpg} \\\tiny{Effect of the EU ETS over time, source: \cite{Bayer2020}}\end{center}}
+				\onslide<2>{\includegraphics[width=.5\textwidth]{Bayer2.jpg}}
+				\\\tiny{Effect of the EU ETS over time, source: \cite{Bayer2020}}
 			\end{center}
 		\end{frame}
 

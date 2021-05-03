@@ -22,8 +22,6 @@
 *.vrb
 *.xlsx
 *.zip
-seminars/MarcusSantAnna2021/compliancedata/
-seminars/MarcusSantAnna2021/otherdata/ 
-
+seminars/02 - did/MarcusSantAnna2021/compliancedata/npdes_downloads/*
+seminars/02 - did/MarcusSantAnna2021/otherdata/* 
  
-.Rproj.user
