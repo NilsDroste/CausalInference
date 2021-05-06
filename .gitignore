@@ -6,6 +6,7 @@
 *.docx
 *.fdb_latexmk
 *.fls
+*.gif
 *.jpg
 *.log
 *.nav
@@ -33,5 +34,10 @@ HeckmanVytlacil_1999__Local instrumental variables and latent variable models fo
 Nakov_2010_Jackknife Instrumental Variables Estimation - Replication and extension of Angrist, Imbens, and Krueger.pdf
 AngristImbens_1991_Sources of Identifying Information in Evaluation Models.pdf
 DAgostinoRubin_2000_ Estimating and Using Propensity Scores With Partially Missing Data.pdf
+
+grayscale_lulogo-en.pdf 
+lulogo-en.pdf
+lulogo-sv.pdf
+small-lu-logo.pdf 
 
 .Rproj.user
