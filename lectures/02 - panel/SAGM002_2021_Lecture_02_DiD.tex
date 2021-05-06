@@ -292,7 +292,7 @@
 				\begin{column}{0.66\textwidth}
 					\begin{center}
 				 		\only<1>{\animategraphics[width=.7\textwidth,controls]{10}{FixedEffects}{0001}{0200}}
-						\only<2>{\includegraphics[width=.7\textwidth]{FEstatic.png}}
+						\onslide<2->{\includegraphics[width=.7\textwidth]{FEstatic.png}}
 					\end{center}
 				\end{column}
 				\begin{column}{0.33\textwidth}
@@ -322,13 +322,13 @@
 			\\ \vspace*{.25cm}
 
 			\begin{equation}
-				Y_{it} = \alpha_i + \theta_t + T_{it} + X_{it} + \epsilon_i
+				Y_{it} = \alpha_i + \theta_t + T_{it} + X_{it} + \varepsilon_i
 			\end{equation}
 
 			\vspace*{.25cm}
 			where $\alpha$ individual and $\theta$ time fixed effects, \\
 			$T$ a binary treatment indicator ($T=D \times P$), \\ possibly a controls vector $X_i$, \\
-			and error term $\epsilon_i$, assumed to be normally distributed and centered around $0$, indepdendent of everything else.
+			and error term $\varepsilon_i$, assumed to be normally distributed and centered around $0$, indepdendent of everything else.
 		\end{frame}
 
 		\begin{frame}{time-trends}

@@ -62,7 +62,7 @@
 			\\ \vspace*{.05cm}
 			\begin{center}
 				\includegraphics[width=\textwidth]{Matching.jpg}
-				\\\tiny{ Image source: \cite{Schleicher2020}}
+				\captionof{figure}{ Image source: \cite{Schleicher2020}}
 			\end{center}
 		\end{frame}
 
@@ -71,7 +71,7 @@
 			\\ \vspace*{.05cm}
 			\begin{center}
 				\includegraphics[width=\textwidth]{MatchingDef.jpg}
-				\\\tiny{ Image source: Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+				\captionof{figure}{ Image source: Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
 			\end{center}
 			\onslide<2> {$\rightarrow$ \underline{matching is a \textbf{\textit{pre-analytical procedure}}, allowing unbiased inference.}}
 		\end{frame}
@@ -80,7 +80,7 @@
 			\begin{center}
 				\only<1>{\includegraphics[width=.7\textwidth]{MatchingProcedure1.jpg}}
 				\onslide<2>{\includegraphics[width=.7\textwidth]{MatchingProcedure2.jpg}}
-				\\\tiny{ Image source: \cite{Schleicher2020}}
+				\captionof{figure}{ Image source: \cite{Schleicher2020}}
 			\end{center}
 		\end{frame}
 
@@ -112,7 +112,7 @@
 			\\ \vspace*{.05cm}
 			\begin{center}
 				\includegraphics[width=\textwidth]{MatchingMethods.png}
-				\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+				\captionof{figure}{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
 			\end{center}
 		\end{frame}
 
@@ -164,7 +164,7 @@
 			For multidimensional data, we can identify nearest neighbours in an n-dimensional space.
 			\begin{center}
 				\includegraphics[width=\textwidth]{MalahanobisDistance.png}
-				\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+				\captionof{figure}{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
 			\end{center}
 		\end{frame}
 
@@ -173,7 +173,7 @@
 			 $\pi(X_i) = Pr(D_i = 1 | X_i)$ by logistic regression
 			\begin{center}
 				\includegraphics[trim={0 0 0 4.5cm},clip,width=\textwidth]{PropScore.png}
-				\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+				\captionof{figure}{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
 			\end{center}
 		\end{frame}
 
@@ -264,7 +264,7 @@
 			RF are multiple regression trees classifying the data by partitioning
 			\begin{center}
 				\includegraphics[trim={0 .75cm 0 1.5cm}, clip, width=.7\textwidth]{RandomForest.png}
-				\\\tiny{Code source: \href{https://en.wikipedia.org/wiki/Random_forest}{\underline{\smash{Wikipedia}}}}
+				\captionof{figure}{Code source: \href{https://en.wikipedia.org/wiki/Random_forest}{\underline{\smash{Wikipedia}}}}
 			\end{center}
 			We can use this to predict treatment (aka propensity scores)
 		\end{frame}
@@ -273,7 +273,7 @@
 			Machine learning such as XGBoost or even ensambles can also be used to
 			\begin{center}
 				\includegraphics[width=.9\textwidth]{XGBoost.png}
-				\\\tiny{Code source: \href{https://blog.quantinsti.com/xgboost-python/}{\underline{\smash{Quant Insti}}}}
+				\captionof{figure}{Code source: \href{https://blog.quantinsti.com/xgboost-python/}{\underline{\smash{Quant Insti}}}}
 			\end{center}
 			$\rightarrow$ predict treatment (aka propensity scores)
 		\end{frame}
@@ -285,7 +285,7 @@
 			\end{equation}
 			\begin{center}
 				\includegraphics[width=.3\textwidth]{GenMatch.png}
-					\\\tiny{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
+					\captionof{figure}{ Image source: \href{https://humboldt-wi.github.io/blog/research/applied_predictive_modeling_19/matching_methods/}{\underline{\smash{Sizemore and Alkurdi 2019}}}}
 			\end{center}
 		\end{frame}
 
@@ -293,14 +293,14 @@
 		\begin{frame}{comparison - fitting distributions}
 			\begin{center}
 				\includegraphics[width=.9\textwidth]{comparison.png}
-				\\\tiny{plotting model comparisons for coviarates of the lalonde data set}
+				\captionof{figure}{plotting model comparisons for coviarates of the lalonde data set}
 			\end{center}
 		\end{frame}
 
 		\begin{frame}{comparison - mean absolute error}
 			\begin{center}
 				\includegraphics[width=\textwidth]{Modelcomparison.png}
-				\\\tiny{plotting model comparisons for the lalonde data set, cf. \cite{Colson2016}}
+				\captionof{figure}{plotting model comparisons for the lalonde data set, cf. \cite{Colson2016}}
 			\end{center}
 		\end{frame}
 
@@ -320,7 +320,7 @@
 			Ferraro and Hanauer (\citeyear{Ferraro2014}) use matching approach (MDM) to assess the effect of protected areas on poverty reduction
 			\begin{center}
 				\includegraphics[trim={0 0 0 3.5cm}, clip, width=.6\textwidth]{Hanauer.jpg}
-				\\\tiny{Causal model of PA on poverty effects, source: \cite{Ferraro2014}}
+				\captionof{figure}{Causal model of PA on poverty effects, source: \cite{Ferraro2014}}
 			\end{center}
 		\end{frame}
 
@@ -333,7 +333,7 @@
 			What if we do only have \textit{one} treated unit?
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl.jpg}
-				\\\tiny{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
+				\captionof{figure}{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
 			\end{center}
 		\end{frame}
 
@@ -341,7 +341,7 @@
 			How about we compare to a weighted average of untreated?
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl2.jpg}
-				\\\tiny{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
+				\captionof{figure}{California introduces tobacco control in 1988, cf. \cite{Abadie2010}}
 			\end{center}
 		\end{frame}
 
@@ -350,14 +350,14 @@
 				\hat Y_{t,post}(0)  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
 			\end{equation}
 			\\ \vspace*{1.5cm}
-			"\textit{In other words, the imputed control outcome for the treated unit is a linear combination of the control units, with intercept $\mu$ and weights $w_i$ for control unit $i$.}" (\cite{Doudchenko2016}: 7)
+			"\textit{In other words, the imputed control outcome for the treated unit is a linear combination of the control units, with intercept $\mu$ and weights $w_i$ for control unit $i$.}" (\cite{Doudchenko2020}: 7)
 		\end{frame}
 
 		\begin{frame}{the process}
 			We compare the treated to the non-treated
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl3.jpg}
-				\\\tiny{A noisy control group, cf. \cite{Abadie2010}}
+				\captionof{figure}{A noisy control group, cf. \cite{Abadie2010}}
 			\end{center}
 		\end{frame}
 
@@ -365,7 +365,7 @@
 			and compute the difference to a counterfactual weighted set of untreated
 			\begin{center}
 				\includegraphics[width=.5\textwidth]{SynthControl4.jpg}
-				\\\tiny{California vs SynthCal, cf. \cite{Abadie2010}}
+				\captionof{figure}{California vs SynthCal, cf. \cite{Abadie2010}}
 			\end{center}
 		\end{frame}
 
@@ -374,7 +374,7 @@
 			Recall the ordinary least square estimate (OLS)
 		\begin{center}
 			\includegraphics[trim={6.5cm 5.25cm 5cm 5cm}, clip, width=.55\textwidth]{OLS.jpg}
-				\\\tiny{OLS, img source: \href{https://serokell.io/blog/regression-analysis-overview}{\underline{\smash{Gavrilova, 2020}}}}
+				\captionof{figure}{OLS, img source: \href{https://serokell.io/blog/regression-analysis-overview}{\underline{\smash{Gavrilova, 2020}}}}
 		\end{center}
 		\end{frame}
 
@@ -384,7 +384,7 @@
 				\hat Y_{t,post}(0)  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
 			\end{math}
 			\\ \vspace*{.5cm}
-			$\mu$ and $w_i$ can, in principle, be estimate with OLS (cf. \cite{Doudchenko2016})
+			$\mu$ and $w_i$ can, in principle, be estimate with OLS (cf. \cite{Doudchenko2020})
 			\begin{equation}
 				(\hat{\mu}^{ols}, \hat{w}^{ols}) = \arg\min_{\mu, w} \sum_{s=1}^{T_0}\left({Y_{0,T_0-s+1}^{obs} - \mu - \sum_{i=1}^{N}{w_i} \cdot Y_{0,T_0-s+1}^{obs} }\right)^2
 			\end{equation}
@@ -393,23 +393,18 @@
 		\end{frame}
 
 		\begin{frame}{estimation}
-			For covariate vector {x}
+			For covariate vector {X} we would want to minimize (cf. \cite{Doudchenko2020})
 			\\ \vspace*{.5cm}
-			$\mu$ and $w_i$ we would also want to minimize (cf. \cite{Doudchenko2016})
 			\begin{equation}
 				\| Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \|_2^2 = \left( Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \right)^T \left( Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \right)
 			\end{equation}
 			\\ \vspace*{.25cm}
-			or, in simpler terms
-			\begin{math}
-				\| X_{treat} - X_{control} W \|
-			\end{math}
-			which resembles a balancing approach (á la matching). Here, this mathing is often performed on lagged outcomes $Y_{t-(1,...,T)}$.
+			This mathing is often performed on lagged outcomes $Y_{t-(1,...,T)}$ and other covariates. \onslide<2->{So, in simpler terms, $	\| X_{treat} - X_{control} W \|$  which resembles a balancing approach (á la matching).}
 			\\ \vspace*{.25cm}
-			\onslide<3> See Doudchenko and Imbens (\citeyear{Doudchenko2016}) for a balanced, cross-validated, elastic net type penalty approach, combining Lasso and ridge regressions to regularize $w$.
+			\onslide<2> See Doudchenko and Imbens (\citeyear{Doudchenko2020}) for a balanced, cross-validated, elastic net type penalty approach, combining Lasso and ridge regressions to regularize $w$.
 		\end{frame}
 
-	\begin{current devs}
+	\subsection{current development}
 		\begin{frame}{current development}
 			Arkhangelsky et al. \citeyear{Arkhangelsky2019} suggest a synthetic diff-in-diff approach, where \\ \vspace*{.15cm}
 			SynthControl:
@@ -450,9 +445,9 @@
 		\begin{frame}{an example}
 			Bayer and Aklin (\citeyear{Bayer2020}) use synthetic controls to assess the effect of EU Emission Trading System (ETS) on CO$_2$ emissions
 			\begin{center}
-				\only<1>{\begin{center}\includegraphics[width=.5\textwidth]{Bayer1.jpg} \\\tiny{Effect of the EU ETS over time, source: \cite{Bayer2020}}\end{center}}
+				\only<1>{\begin{center}\includegraphics[width=.5\textwidth]{Bayer1.jpg} \captionof{figure}{Effect of the EU ETS over time, source: \cite{Bayer2020}}\end{center}}
 				\onslide<2>{\includegraphics[width=.5\textwidth]{Bayer2.jpg}}
-				\\\tiny{Effect of the EU ETS over time, source: \cite{Bayer2020}}
+				\captionof{figure}{Effect of the EU ETS over time, source: \cite{Bayer2020}}
 			\end{center}
 		\end{frame}
 

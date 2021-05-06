@@ -4,8 +4,6 @@ library(haven)
 library(lmtest)
 library(sandwich)
 library(plm)
-library(AER)
-library(fixest)
 
 
 # Load data -----

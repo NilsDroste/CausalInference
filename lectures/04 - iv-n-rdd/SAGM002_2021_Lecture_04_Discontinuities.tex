@@ -1,0 +1,407 @@
+\documentclass[aspectratio=169]{beamer}
+%\documentclass{beamer}
+%%%CHOOSE ASPECT RATIO ABOVE%%%
+
+\usetheme{LU}
+
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage[british]{babel}
+\usepackage{graphicx}
+% \usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{multirow}
+
+\renewcommand\theadfont{\tiny}
+\renewcommand*{\bibfont}{\scriptsize}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+
+% ------------------------------------------------------------------------------
+
+\title[Causal Inference]{Instrumental Variables and \newline regression discontinuity designs}
+
+\titlecolor{LUIvory} % Choose between LUPink, LULBlue, LUIvory, LUGreen
+\titleimage{\includegraphics[scale=.955]{Grayscale-Globe.jpg}}
+\author{Nils Droste}
+\subtitle{}
+\date{dd mm yyyy}
+\institute{Lund University\\Department for Political Science}
+\newcommand{\conference}{2021 ClimBEco course}
+
+% bibliography
+\addbibresource{E:/Dropbox/Dokumente/references/library.bib}
+
+\begin{document}
+
+% ------------------------------------------------------------------------------
+
+\titleframe
+
+
+% ------------------------------------------------------------------------------
+\section{Introduction}
+
+
+% ------------------------------------------------------------------------------
+\section{Instrumental Variables}
+	\subsection{intuition}
+		\begin{frame}{Instrumental Variables}
+			Instrumental Variable (IV)
+			\begin{center}
+				\includegraphics[scale=.7]{dag-iv}
+				\captionof{figure}{Using exogeneous variation in instrument to close back-door. Image source: \href{http://nickchk.com/causalgraphs.html}{\underline{\smash{Huntington-Klein 2018}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Instrumental Variables}
+			An exemplary study
+			\begin{center}
+				\includegraphics[scale=.4]{Larreboure}
+				\captionof{figure}{\cite{Larreboure2021}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{Instrumental Variables}
+			But there may be plenty of causal pathways in reality
+			\begin{columns}
+				\begin{column}{0.5\textwidth}
+					\includegraphics[scale=.175]{WeatherIV.jpg}
+				\end{column}
+				\begin{column}{0.5\textwidth}
+					\includegraphics[scale=.25]{WeatherIV2.jpg}
+				\end{column}
+			\end{columns}
+			\begin{center}
+				\scriptsize{Weather IV and (in)dep vars, in general (left) and with temporal variations (right). Source: \cite{Mellon2020}}
+			\end{center}
+		\end{frame}
+
+	\subsection{formalities}
+		\begin{frame}{Instrumental Variables}
+			\begin{columns}
+				\begin{column}{0.66\textwidth}
+					\begin{center}
+			 			\animategraphics[width=.7\textwidth,controls]{10}{IV-}{0}{174}
+					\end{center}
+				\end{column}
+				\begin{column}{0.33\textwidth}
+					Two-Stage Least Square (2SLS) estimator \\ \vspace*{.2cm}
+					\scriptsize{1. stage: regress $Z$ on $X$:}
+					\normalsize{\begin{equation}
+						X_{i} = \alpha_1 + \beta_1 Z_{i} + \gamma_1 W_{i} + \varepsilon_{1,i}
+					\end{equation}} \\
+					\scriptsize{and predict the variation in $X$ explained by $Z$: $\widehat{X} = \beta_1 Z_{i}$. \\ \vspace*{.2cm}
+					2. stage: plug in $\widehat{X}$ to estimate the variation in $Y$ not explained by confounder $W$: \\ \vspace*{-.4cm}}
+					\normalsize{\begin{equation}
+						Y_{i} = \alpha_2 + \beta_2 \widehat{X}_{i} + \gamma_2 W_{i} + \varepsilon_{2,i}
+					\end{equation}}
+				\end{column}
+			\end{columns}
+		\end{frame}
+
+		\begin{frame}{conditions}
+			There are important conditions to consider
+			\begin{itemize}
+				\item<1-> \textit{relevance} of instrument for predicting $Y$ $\rightarrow E((\widehat{X}_i|Z=1)-(\widehat{X}_i|Z=0)) \neq 0$, aka $Z$ is correlated with $X$, and thus with $Y$.
+				\item<2-> \textit{exclusion} restriction of $Z$ being independent of $Y$: $E(\epsilon_i, Z_i | W_i) = 0$, aka no backdoor $Z \rightarrow Y$ or endogeneity, i.e. no relation with omitted variables.
+			\end{itemize}
+			\vspace*{.5cm}
+			\onslide<3->{Now, let us see how to formulate this in the potential outcome notation.} \\ \vspace*{.25cm}
+			\onslide<4>{For this let treatment or participation again be denoted by $D$, now as a function of the instrument $\rightarrow$ $D_i(Z_i)$, the \textit{intention to treat}.}
+		\end{frame}
+
+		\begin{frame}{notation}
+			Step by step \\ \vspace*{.25cm}
+			\begin{itemize}
+				\item<1-> Imbens and Angrist (\citeyear{Imbens1994}) formulate local average treatment effect (LATE)
+				\begin{itemize}
+					\item<1-> for the \textit{subpopulation} responding to instrument $Z$, \\ that is those who participate $P(1)$ in treatment $D$
+				\end{itemize}
+			\end{itemize}
+			\vspace*{.25cm}
+			\onslide<2->{
+				\begin{equation}
+					E(Y_i|Z_i=1)-E(Y_i|Z_i=0)
+				\end{equation}
+			}
+			\begin{itemize}
+				\item []
+				\begin{itemize}
+					\item<3-> here the LATE is given by $P(1) \cdot E \lbrack Y_i(1) - Y_i(0)|D_i(1) = 1 \rbrack $
+					\item<4-> as long as participation $P(1)>P(0)$ and $D_i(1) \geq D_i(0) \forall i$, aka monotonic \\ (or $\leq$, respectively)
+				\end{itemize}
+			\end{itemize}
+			\vspace*{.25cm}
+			\onslide<5>Why? % Else, we can not arrive at identifying LATE by $ E( Y_i(1)-Y_i(0) | D_i(1)-D_i(0)=1 ) $.
+		\end{frame}
+
+		\begin{frame}{Who's gonna be "treated"}
+			Consider Angrist, Imbens and Rubin (\citeyear{Angrist1996a})
+			\\\vspace*{.25cm}
+				\begin{table}
+					\begin{tabular}{|c|c|c|c|}
+						\cline{3-4}
+						\multicolumn{2}{c}{\multirow{2}{*}{}}                           & \multicolumn{2}{|c|}{$Z_i = 0$}     \\ \cline{3-4}
+						\multicolumn{2}{c}{}                                            & \multicolumn{1}{|c|}{$D_i(0) = 0$}      &  $D_i(0) = 1$   \\ \cline{1-4}
+						\multicolumn{1}{|c|}{\multirow{2}{*}{$Z_i = 1$}} & $D_i(1) = 0$ & Nevertaker         &  Defier        \\ \cline{2-4}
+						\multicolumn{1}{|c|}{}                           & $D_i(1) = 1$ & Complier           &  Always-taker  \\ \cline{1-4}
+					\end{tabular}
+				\end{table}
+				\vspace*{.15cm}
+			\begin{itemize}
+				\item<2->  "\textit{if people are more likely, on average, to participate given Z = w than given Z = z, then anyone who would participate given Z = z must also participate given Z = w}" (\cite{Imbens1994}) \\ \vspace*{.15cm}
+				\onslide<3->{$\rightarrow$ assumes existence of only one of compliers or defiers, e.g. \textit{no one} defies}
+				\item<4-> allows valid estimate of LATE, but may not always be realistic
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{Relaxing monotonicity assumption}
+			de Chaisemartin (\citeyear{DeChaisemartin2017}) shows IVs can be valid without strong monotonicity \\ \vspace*{.15cm}
+			\begin{itemize}
+				\item "\textit{If there are defiers in the population, we only know that 2SLS estimates a weighted difference between the effect of the treatment among compliers and defiers}"
+				\item<2->  a weak solution: $P(C_F)=P(F)$ and $E(Y(1) - Y(0) |  C_F) = E(Y(1) - Y(0) |  F) $
+				\item<3-> "\textit{is satisfied if a subgroup of compliers accounts for the same percentage of the population as defiers and has the same LATE}"
+				\item<4-> I believe this can be approached with matching, too. See Murray et al. (\citeyear{Murray2021}) who suggest to estimate the intention to treat D(Z) with logistic regression, providing leeway for a propensity score or other matching approach (cf. \cite{Hirano2003, Rosenbaum1984}).
+			\end{itemize}
+		\end{frame}
+
+	\subsection{technicalities}
+		\begin{frame}{Weak instruments}
+			When instruments are only weakly correlated with treatment, reconsider
+			\begin{equation}
+				Y_{i} = \alpha_2 + \beta_2 {D}_{i} + \gamma_2 W_{i} + \varepsilon_{i}
+			\end{equation}
+			\begin{equation}
+				X_{i} = \alpha_1 + \beta_1 Z_{i} + \gamma_1 W_{i} + \upsilon_{i}
+			\end{equation}
+			\vspace*{.15cm}
+			A condition was relevance, i.e. $E((D_i|Z=1)-(D_i|Z=0)) \neq 0$, or $\Cov(Z_i,D_i|W_i) \neq 0$
+			\begin{itemize}
+			 \item to estimate IV, $\widehat{\beta}=\frac{\Cov(Y_i,Z_i)}{\Cov(Z_i,D_i|W_i)}$
+			 \item problematic when $\Cov(Z_i,D_i|W_i) \to 0$ as $\Delta Z$ grows large even for small variations
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{Weak instruments}
+			A range of techniques for robust parameter estimation in weak IV 2SLS \\ \vspace*{.15cm}
+			\begin{itemize}
+			 \item<1-> F-test for strong enough instruments (\cite{Stock2003})
+			 \item<2-> heteroskedasticity and autocorrelation robust for just identified models (\cite{Chernozhukov2008})
+			 \item<3-> heteroskedasticity, autocorrelation and cluster robust in a more general setting (\cite{Montiel2013})
+			 \item<4-> a more powerfull test with t-ratio critical value adjustments for significance testing (\cite{Lee2020})
+		 	\end{itemize}
+			\vspace*{.15cm}
+			\onslide<5>{$\rightarrow$ We will look into some (basic) testing in the seminar.}
+		\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{Regression Discontinuity}
+	\subsection{intuition}
+		\begin{frame}{Intuition}
+			Suppose we believe there is an effect for which assignment is non-random, but the cut-off at which treatment is assigned is quasi-random (cf. \cite{Thistlewaite2016}). \\ \vspace*{.15cm}
+			\begin{center}
+				\onslide<2>{\includegraphics[width=.75\textwidth]{SpatialRDD_example.jpg}
+				\captionof{figure}{The border between Haiti and the Dominican Republic. Image source: \cite{Wuepper2020}}
+				}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{concept}
+			\begin{center}
+				\includegraphics[width=.5\textwidth]{RDDconcept}
+				\captionof{figure}{The RDD concept and the effect of bin size choice. Image source: \cite{Cattaneo2016}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{DAGs}
+			Regression-Discontinuity-Design (RDD)
+			\begin{columns}
+				\begin{column}{0.5\textwidth}
+					\begin{center}
+						\onslide<1->{\includegraphics[width=\textwidth]{dag-rdd-1}}
+					\end{center}
+				\end{column}
+				\begin{column}{0.5\textwidth}
+					\begin{center}
+						\onslide<2->{\includegraphics[width=\textwidth]{dag-rdd-2}}
+					\end{center}
+				\end{column}
+			\end{columns}
+			\scriptsize{Focussing on effects just around the cutoff value. Image source: \href{http://nickchk.com/causalgraphs.html}{\underline{\smash{Huntington-Klein 2018}}}}
+			\onslide<2>{$rigtharrow$ Do you see the IV in RDD?}
+		\end{frame}
+
+	\subsection{notation}
+
+		\begin{frame}{notation}
+			Let us formulate in the potential outcomes notation. Suppose there is a outcome $(Y(1) ,Y(0))$ that depends on treatment $D$ and covariate $X$.
+			\\ \vspace*{.15cm}
+			\onslide<2->{While $Y(X)$ is assumed to be continous, treatment $D$ kicks in at a quasi-random threshold of $\overline{x}$, such that}
+			\onslide<3->{
+				\begin{equation}
+					D_i=
+					\begin{cases}
+							1 \text{if}  x_i \geq \overline{x} \\
+							0 \text{if}  x_i < \overline{x}
+					\end{cases}
+				\end{equation}
+				}
+			\vspace*{.25cm}
+			\onslide<4->{
+				The identifying assumption is again that treatment assignment is independent of outcomes $E(Y(1)-Y(0) \perp D | X = \overline{x})$.
+				}
+		\end{frame}
+
+		\begin{frame}{Sharp RDD}
+			The cutcoff at $\overline{x}$ can be \textbf{sharp}
+				\begin{itemize}
+					\item<2-> in which case there is no overlap on both sides of $\overline{x}$
+					\item<3-> we assume the outcomes would have been smooth in the absencee of treatment (aka extrapolate a "bin" beyond the threshold)
+				\end{itemize}
+				\begin{center}
+					\onslide<3->{\includegraphics[width=.5\textwidth]{SRDD.jpg} \captionof{figure}{\cite{Imbens2008}}}
+				\end{center}
+				\begin{itemize}
+					\item<4-> and measure $\tau_{srdd} = \lim_{x \to \overline{x}} E[Y(1)|X=x] - \lim_{x \gets \overline{x}} E[Y(0)|X=x] $
+					\item<5> $D$ is not just correlated but a deterministic function of $x$ (once we know $x$ and $\overline{x}$, we know $D$)
+				\end{itemize}
+		\end{frame}
+
+		\begin{frame}{estimator}
+			\begin{columns}
+				\begin{column}{0.66\textwidth}
+						\begin{center}
+							\animategraphics[width=.7\textwidth,controls]{10}{RDD-}{0}{174}
+						\end{center}
+					\end{column}
+				\begin{column}{0.33\textwidth}
+					\onslide<2>{
+						RDD estimation
+						\begin{equation}
+							Y_{i} = \alpha_i + \beta X_{it} + \gamma t_i +  \varepsilon_{it}
+						\end{equation}
+						\scriptsize{where $t$ indicates treatment cuttoff values $\overline{x}$: \\\vspace*{-.4cm}}
+						\normalsize{\begin{equation}
+							t_i=
+							\begin{cases}
+									1 \text{if}  x_i \geq \overline{x} \\
+									0 \text{if}  x_i < \overline{x}
+							\end{cases}
+						\end{equation}} \\
+						\scriptsize{This would often include polynomial terms to allow for non-linear functional forms (but should not, cf. \cite{Gelman2019}). Another typical approach is a local linear regression (which is displayed in the animation) or smoothing functions. }
+						}
+				\end{column}
+			\end{columns}
+		\end{frame}
+
+		\begin{frame}{fuzzy RDD}
+			Suppose the data did \textbf{not} look like this \\ \vspace*{.15cm}
+			\begin{center}
+				\includegraphics[width=\textwidth]{FuzzyRDD1.png}
+				\captionof{figure}{
+					\href{https://evalf20.classes.andrewheiss.com/example/rdd-fuzzy/}{\underline{\smash{Heiss 2020}}}
+					}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{fuzzy RDD}
+			but rather looked like this \\ \vspace*{.15cm}
+			\begin{center}
+				\includegraphics[width=\textwidth]{FuzzyRDD2.png}
+				\captionof{figure}{
+					\href{https://evalf20.classes.andrewheiss.com/example/rdd-fuzzy/}{\underline{\smash{Heiss 2020}}}
+					}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{fuzzy RDD}
+			So we need to evaluate \\ \vspace*{.15cm}
+			\begin{center}
+				\includegraphics[width=.75\textwidth]{FuzzyRDD3.png}
+				\captionof{figure}{
+					\href{https://evalf20.classes.andrewheiss.com/example/rdd-fuzzy/}{\underline{\smash{Heiss 2020}}}
+				}
+			\end{center}
+			\onslide<2>{This is literally an IV setting where a different probability on two sides of the cutoff predicts participation.}
+		\end{frame}
+
+		\begin{frame}{Fuzzy RDD}
+			The cutcoff at $\overline{x}$ is be \textbf{fuzzy}
+				\begin{itemize}
+					\item<2-> because of deniers or nevertakers etc, there is overlap on both sides of $\overline{x}$
+					\item<3-> probabilities differ: $\lim_{x \to \overline{x}} Pr(Y(1)|X=x] \neq \lim_{x \gets \overline{x}} Pr(Y(0)|X=x) $
+				\end{itemize}
+				\begin{center}
+					\onslide<3->{\includegraphics[width=.5\textwidth]{FRDD.jpg} \captionof{figure}{\cite{Imbens2008}}}
+				\end{center}
+				\begin{itemize}
+					\item<4-> if unconfounded, $\tau_{frdd} = E[Y(1)|D=1, X=\overline{x}] -  E[Y(0)|D=1, X=\overline{x}] $
+					\item<5>  which we can estimate with 2SLS, predicting $D$ in first stage, plugging estimates into second stage
+				\end{itemize}
+		\end{frame}
+
+
+	\subsection{examples}
+
+		\begin{frame}{examples}
+			There are discontiuities in space
+			\begin{center}
+				\only<1>{\includegraphics[scale=.6]{SpaceRDD.jpg} \captionof{figure}{\cite{Wuepper2020b}}}
+				\only<2>{\includegraphics[scale=.4]{SpaceRDD2.jpg} \captionof{figure}{Regression discontiuities in covariates but not in vegetation potential, \cite{Wuepper2020b}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{examples}
+			Time \\
+			\begin{center}
+				\includegraphics[scale=.4]{TimeRDD.jpg} \captionof{figure}{\cite{Hausman2018}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{examples}
+			Rules \\
+			\begin{center}
+				\only<1>{\includegraphics[scale=.5]{AbouChadi} \captionof{figure}{\cite{AbouChadi2018}}}
+				\only<2>{\includegraphics[scale=.5]{PartyCompetitionModel} \captionof{figure}{Hotelling-Downs Model of 2 Party Competition. Image Source: \href{https://blogs.warwick.ac.uk/dcstevens/entry/the_hotelling-downs_model/}{\underline{\smash{Daniel Corradi Stevens}}}}}
+				\only<3>{\includegraphics[scale=.4]{AbouChadiRDD} \captionof{figure}{Mainstream party position on cultural position. Image source: \cite{AbouChadi2018}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{examples}
+			There can be kinks, aka slope shifts \\
+			\begin{center}
+				\includegraphics[scale=.5]{Kinks.jpg} \captionof{figure}{\cite{Ganong2018}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{examples}
+			Multiple breaks \\
+			\begin{center}
+				\only<1>{\includegraphics[scale=.4]{Maimonides.jpg} \captionof{figure}{\cite{Angrist1999}}}
+				\only<2>{\includegraphics[scale=.4]{Maimonides2.jpg} \captionof{figure}{\cite{Angrist1999}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{software}
+			available packages
+			\begin{itemize}
+				\item \href{https://cran.r-project.org/web/packages/rdd/}{\underline{\smash{rdd}}}
+				\item \href{https://rdpackages.github.io/}{\underline{\smash{rdrobust}}}
+				\item \href{https://rdpackages.github.io/}{\underline{\smash{rdlocrand}}}
+				\item \href{https://rdpackages.github.io/}{\underline{\smash{rddensity}}}
+				\item \href{https://rdpackages.github.io/}{\underline{\smash{rdmulti}}}
+				\item \href{https://rdpackages.github.io/}{\underline{\smash{rdpower}}}
+			\end{itemize}
+		\end{frame}
+
+% ------------------------------------------------------------------------------
+	\begin{frame}[t, allowframebreaks]{References}
+		% [t,allowframebreaks]
+	  \printbibliography
+	\end{frame}
+% ------------------------------------------------------------------------------
+
+\end{document}

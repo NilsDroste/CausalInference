@@ -4,8 +4,6 @@ library(haven)
 library(lmtest)
 library(sandwich)
 library(plm)
-library(AER)
-library(fixest)
 
 
 # Load data -----
@@ -31,87 +29,27 @@ summary(mod5, vcov=vcovHC(mod5,method = "arellano"))
 
 
 # TODO TASK: reproduce model 3 from table 2, leave the code below, don't forget to store it in an appropriate object, e.g. mod3
-# try both a standard OLS with lm(), and a fixed effects model with plm()
+# try both a standard OLS with lm(), and a fixed effects model with plm(), try to find out why the second may not be running and suggest a fix
 
 mod3_lm <- lm(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year), data=smoke)
 mod3_lm %>% summary(vcov=vcovHC(mod3_lm,"HC1"))
 
 mod3_plm <- plm(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year), effect = "individual" , model = "random", data=smoke)
+# table(index(smoke), useNA = "ifany")
+
+smoke %>% select(ctrcode, year) %>% table() # sometimes multiple measurements for one year.
+
+# let us try a multi-level model 
+library(lme4)
+library(lmerTest)
+smoke_plus <- smoke %>% group_by(ctrcode, year) %>% summarise(avg_lnsmoke = mean(lnsmoke, na.rm = T)) %>% right_join(smoke)
+mod3_multilev <- lmer(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + centcity + lndens + coast + areaunkn + indus + residential + cityunkn + (1|ctrcode:year), data = smoke_plus, REML = T)
+summary(mod3_multilev)
+# with group averages to approximate the demeaned fixed effect approach
+mod3_multilev_avg <- lmer(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + centcity + lndens + coast + areaunkn + indus + residential + cityunkn + (1 + avg_lnsmoke |ctrcode:year), data = smoke_plus, REML =F)
+summary(mod3_multilev_avg)
+# which has a singular fit, meaning an overfitted model, see: https://stats.stackexchange.com/questions/378939/dealing-with-singular-fit-in-mixed-models
 
 
 
-# Table 3 ----
-
-ivmod1 <- ivreg(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2)
-summary(ivmod1,cov=vcovHC(ivmod1,"HC1"))
-
-ivmod2 <- plm(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), index = c("ctrcode"), effect = "individual" , model = "random", data=so2)
-summary(ivmod2, vcov=vcovHC(ivmod2,method = "arellano"))
-
-ivmod4 <-
-  ivreg(lnspm ~ lnengopc + lnenergy + lngdp + lngdpsq + lngdpcu + polity + lnliter + resid + cityunkn + centcity + lndens + coast + as.factor(year) |
-          . - lnengopc + ingoparticip + lnengopc72, data= spm)
-summary(ivmod4,cov=vcovHC(ivmod1,"HC1"))
-
-ivmod5 <-
-  plm(lnspm ~ lnengopc + lnenergy + lngdp + lngdpsq + lngdpcu + polity + lnliter + resid + cityunkn + centcity + lndens + coast + as.factor(year) |
-        . - lnengopc + ingoparticip + lnengopc72, index = c("ctrcode"), effect = "individual" , model = "random", data = spm)
-summary(ivmod5, vcov=vcovHC(ivmod5,method = "arellano")) # this fails.
-# check https://stackoverflow.com/questions/11404141/problems-with-within-and-random-models-in-plm-package
-# one potential failure is ill specified data.
-
-
-# So, lets assess the data and the models graphically ----
-par(mfrow=c(2,2))
-plot(mod1)
-
-# Is that a good fit?
-
-# let's check what caused the strange pattern
-pairs(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + year, data = so2)
-
-# what do you think it is?
-so2 %>% group_by(ctrcode) %>% ggplot(aes(y= lnso2med, x = year, color=ctrcode)) + geom_point()
-
-# let us check what the min values are
-which.min(so2$lnso2med)
-
-# so what is the minimum value? 
-min(so2$lnso2med)
-
-# that is logaritmized so let us check out the original value
-min(so2$so2med)
-
-# let us again plot 
-so2 %>% group_by(ctrcode) %>% ggplot(aes(y= so2med, x = year, color=ctrcode)) + geom_point()
-
-which(so2$so2med==0) # this gives you the row numbers where so2med is equal to 0
-# let us check which countries these values are from
-so2 %>% filter(so2med==0) %>% select(ctrcode) %>% table()
-
-# # what if we excluded those values and reran the regression?
-# let us respecify the log transformation
-
-so2_new <- so2 %>% mutate(lnso2med_new = log1p(so2med)) 
-
-# and plot again
-so2_new %>% group_by(ctrcode) %>% ggplot(aes(y= lnso2med_new, x = year, color=ctrcode)) + geom_point()
-
-so2_new %>% group_by(ctrcode) %>% ggplot(aes(x=lnso2med_new, color=ctrcode)) + geom_density()
-
-# so let us check, what if we re-run the analysis? 
-
-mod1_new <- lm(lnso2med_new ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2_new) 
-summary(mod1_new, vcov = vcovHC(mod1_new,"HC1"))
-
-mod2_new <- plm(lnso2med_new ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), index = c("ctrcode"), effect = "individual" , model = "random", data = so2_new)
-summary(mod2_new, vcov=vcovHC(mod2_new,method = "arellano"))
-
-ivmod1_new <- ivreg(lnso2med_new ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2_new)
-summary(ivmod1_new,cov=vcovHC(ivmod1_new,"HC1"))
-
-ivmod2_new <- plm(lnso2med_new ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), index = c("ctrcode"), effect = "individual" , model = "random", data=so2_new)
-summary(ivmod2_new, vcov=vcovHC(ivmod2_new,method = "arellano"))
-
-# Task 2 plot mod1_new and discuss whether the model quality has improved, you may also use information from the model summary()
 
