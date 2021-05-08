@@ -297,12 +297,13 @@
 				\end{column}
 				\begin{column}{0.33\textwidth}
 					\onslide<3>{
-					FE Estimator
-					\begin{equation}
-						Y_{i} = \alpha_i + \beta X_{it} + \varepsilon_{it}
-					\end{equation}
-					\scriptsize{with $\alpha_i  = $ individual, time-invariant effect, and $X_i = $ a variable of interest.
-					The so called \textit{within} transformation accounts for $\alpha_i$ through demeaning such that we can consistently estimate $\partial Y / \partial X$ }}
+						FE Estimator
+						\begin{equation}
+							Y_{i} = \alpha_i + \beta X_{it} + \varepsilon_{it}
+						\end{equation}
+						\scriptsize{with $\alpha_i  = $ individual, time-invariant effect, and $X_i = $ a variable of interest.
+						The so called \textit{within} transformation accounts for $\alpha_i$ through demeaning such that we can consistently estimate $\partial Y / \partial X$ }
+					}
 				\end{column}
 			\end{columns}
 		\end{frame}
@@ -487,6 +488,13 @@
 						\item robust inference strategy under non-parralel trends \cite{Rambachan2020}, R package \href{https://github.com/asheshrambachan/HonestDiD}{\underline{\smash{HonestDiD}}}
 					\end{itemize}
 			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{Summary}
+			\begin{center}
+				\includegraphics[width=.7\textwidth]{DIDsummary.png}
+				\captionof{figure}{\href{https://twitter.com/davidfromterra/status/1390649644418584579?s=20}{\underline{\smash{Schönholzer 2021}}}, cf. \cite{Roth2021a}}
+			\end{center}
 		\end{frame}
 
 		\begin{frame}{Summary}

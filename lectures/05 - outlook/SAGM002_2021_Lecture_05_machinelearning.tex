@@ -1,0 +1,325 @@
+\documentclass[aspectratio=169]{beamer}
+%\documentclass{beamer}
+%%%CHOOSE ASPECT RATIO ABOVE%%%
+
+\usetheme{LU}
+
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage[british]{babel}
+\usepackage{graphicx}
+% \usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{textcomp}
+
+\renewcommand\theadfont{\tiny}
+
+\title[Causal Inference]{Machine learning, Bayes and \& \newline structural models }
+
+\titlecolor{LUIvory} % Choose between LUPink, LULBlue, LUIvory, LUGreen
+\titleimage{\includegraphics[scale=.955]{Grayscale-Globe.jpg}}
+\author{Nils Droste}
+\subtitle{e.g. authors}
+\date{dd mm yyyy}
+\institute{Lund University\\Department for Political Science}
+\newcommand{\conference}{2021 ClimBEco course}
+
+\renewcommand*{\bibfont}{\scriptsize}
+\newcommand\prop{\mathord{\textrm{p}}}
+
+% bibliography
+\addbibresource{E:/Dropbox/Dokumente/references/library.bib}
+
+\begin{document}
+
+% ------------------------------------------------------------------------------
+
+\titleframe
+
+% ------------------------------------------------------------------------------
+% \section{Outline}
+
+	\begin{frame}{introduction}
+		Today, we will talk about \\ \vspace*{.2cm}
+		\begin{itemize}
+			\item machine learning techniques
+			\item structural equation models
+			\item Bayesian inference
+		\end{itemize}
+		\vspace*{.2cm}
+		and their relation to causal inference
+	\end{frame}
+
+	\begin{frame}{introduction}
+		"There is no hierarchy in causal inference"
+		\begin{center}
+			\only<1>{
+				% The elefant in the room \\
+				\includegraphics[scale=.325]{There-is-no-hierarchy-in-causal-inference.jpg}
+				\captionof{figure}{\href{https://twitter.com/MoritzPoll/status/1380514413464158211?s=20}{\underline{\smash{Moritz Poll2021}}}}
+			}
+			\only<2>{
+				% The real elefant? \\
+				\includegraphics[scale=.225]{MachineLearning.jpg}
+				\captionof{figure}{\href{https://twitter.com/kareem_carr/status/1374760100079017984?s=20}{\underline{\smash{Kareem Carr 2021}}}}
+			}
+			\only<3>{
+				% The real elefant? \\
+				\includegraphics[scale=.4]{CausalHierarchy.jpg}
+				\captionof{figure}{The causal hierarchy. Source: \cite{Pearl2019}}
+			}
+			% \only<4>{
+			% 	% The real elefant? \\
+			% 	\includegraphics[scale=.3275]{CausalHierarchy2.jpg}
+			% 	\captionof{figure}{The causal hierarchy. Source: \cite{Bareinboim2020}}
+			% }
+		\end{center}
+	\end{frame}
+
+% ------------------------------------------------------------------------------
+% \section{Outline}
+
+\section{machine learning}
+
+	\subsection{causal trees}
+
+		\begin{frame}{causal trees}
+			Recall, the conditional average treatment effect (cf. cite{Athey2016}) \\
+				\vspace*{.2cm}
+			\begin{equation}
+				CATE = E(Y_i(1)-Z-i(0)|X_i=x)
+			\end{equation}
+ 			\vspace*{.2cm}
+			$\rightarrow$ we could look at average differences between treated and untreadted groups within partitions of the observed
+		\end{frame}
+
+		\begin{frame}{causal trees}
+			We could use covariates $X_i$ to identify clusters within the observed, e.g. by recursive binary splitting\\
+				\vspace*{.2cm}
+				\begin{center}
+					\only<1>{
+						\includegraphics[scale=.5]{Forests.jpg}
+						\captionof{figure}{Source: \cite{Athey2019}}
+					}
+					\only<2>{
+						\includegraphics[scale=.4]{Forests2.jpg}
+						\captionof{figure}{\href{https://www.datacamp.com/community/tutorials/decision-trees-R}{\underline{\smash{datacamp 2021}}}}
+					}
+					\only<3>{
+						\includegraphics[scale=.4]{Forests3.png}
+						\captionof{figure}{\href{https://github.com/grantmcdermott/parttree}{\underline{\smash{McDermott 2021}}}}
+					}
+				\end{center}
+		\end{frame}
+
+		\begin{frame}{causal trees}
+			We can use classification and regression trees to estimate \\
+				\vspace*{.2cm}
+			\begin{equation}
+				\hat{\tau}(x) = \frac{1}{|\{i:D_i  = 1, X_i \in L\}|} \sum_{\{i:D_i  = 1, X_i \in L\}}Y_i - \frac{1}{|\{i:D_i  = 0, X_i \in L\}|} \sum_{\{i:D_i  = 0, X_i \in L\}}Y_i
+			\end{equation}
+ 			\vspace*{.2cm}
+			by "recursively splitting the feature space ... into a set of leaves $L$" (\cite{Wager2018}) \\ \vspace*{.2cm}
+			\onslide<2>{
+				and repeat to build an ensemble of trees $\rightarrow$ random forests. This particularly well suited for heterogeneous treatment effects. Athey and Imbens (\citeyear{Athey2016}) suggest a sort of cross validation procedure for robust causal inference.
+				}
+		\end{frame}
+
+	\subsection{estimation}
+
+		\begin{frame}{estimation techniques}
+			Instead of ordinary least squares \\
+				\vspace*{.1cm}
+			\begin{equation}
+				\hat{beta}^{ols} = \arg \min_{\beta} \sum{i=1}^{N}(Y-\beta X_i)^2
+			\end{equation}
+			\vspace*{.1cm}
+			we can also use machine learning techniques (aka sequential updates / iterative estimation / optimization of parameter values) to estimate
+			\onslide<2>{
+				\begin{equation}
+					\hat{beta}^{ml} = \arg \min_{\beta} \sum{i=1}^{N}(Y-\beta X_i)^2 + \lambda (\| \beta \|_q)^{1/q}
+				\end{equation}
+			}
+			\onslide<3>{
+				with a regularizing penalty term that results in sparse models, \\
+				$q=1$ for Lasso, $q=2$ ridge regression, and $q \to 0$ for best subset regression, or hybrids such as elastic nets (cf. \cite{Athey2019}) \\
+				and posterior choice of $\lambda$ by (n-fold) cross-validation.
+			}
+		\end{frame}
+
+		\begin{frame}{estimation techniques}
+			Or we use neural networks, where we transform \\
+				\vspace*{.1cm}
+			\begin{equation}
+				Z_{ik}^{(1)} = \sum{j=1}^{K}\beta_{kj}{(1)}X_{ij} \quad  \textrm{ for }  \quad  k = i, ...  , K_1
+			\end{equation}
+				\vspace*{.1cm}
+			with $K$ covariates (aka features) and latent (aka unobserved / hidden node) variable $Z_jk$, e.g. into a recitified linear function $ g(z) = z1_{z>0}	$. \\
+			\onslide<2>{
+				which allows us a to formulat a neural network
+				\begin{columns}
+					\begin{column}{0.5\textwidth}
+						\begin{center}
+							\href{https://www.cureus.com/articles/2260-classification-of-brain-metastases-prognostic-groups-utilizing-artificial-neural-network-approaches}{\includegraphics[scale=.2]{NeuralNet.png}}
+						\end{center}
+					\end{column}
+					\begin{column}{0.5\textwidth}
+						\begin{equation}
+							Y_i = \sum_{k=1}^{K_1} \beta{k}{(2)}g \lbrack Z_{ik}^2 \rbrack + \varepsilon_i
+						\end{equation}
+					\end{column}
+				\end{columns}
+				\vspace*{.2cm}
+				with a single layer $K_1$, and a non-linear transformation $g(\cdot)$ (cf. \cite{Athey2019,Farrell2021}).
+			}
+		\end{frame}
+
+	\subsection{matching}
+		\begin{frame}{causal trees}
+			Or, we can use machine learning methods for matching or synthetic control (\cite{Doudchenko2020}) \\ \vspace*{.1cm}
+			e.g to estimate weights $w$  and intercept $\mu$ for simulating counterfactual
+				\vspace*{.2cm}
+			\begin{equation}
+				\hat Y_{t,post}(0)  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
+			\end{equation}
+			% \vspace*{.2cm}
+			by
+			\begin{align}
+				(\hat{\mu}^{ols}, \hat{w}^{ols}) = \arg\min_{\mu, w} \sum_{s=1}^{T_0}\left({Y_{0,T_0-s+1}^{obs} - \mu - \sum_{i=1}^{N}{w_i} \cdot Y_{0,T_0-s+1}^{obs} }\right)^2 + \notag \\
+				\underbrace{\lambda \left( \frac{1-\alpha}{2} \| w \|_2^2 + \alpha \| w \|_1 \right) }_{penalty function}
+			\end{align}
+		\end{frame}
+
+		\begin{frame}{matching}
+			We can also used unsupervised machine learning, such as e.g. latent dirichlet allocation, to use text as data (\cite{Gentzkow2019}) for matching a treated with an untreated population (aka matching on similar content)
+			\begin{center}
+				\only<1>{
+					\includegraphics[scale=.4]{TextMatching.jpg}
+					\captionof{figure}{Topical Inverse regression matching (TIRM). Source: \cite{Roberts2020a}}
+					}
+				\onslide<2>{
+					\includegraphics[scale=.4]{TextMatching2.jpg}
+					\captionof{figure}{Topical Inverse regression matching (TIRM). Source: \cite{Roberts2020a}}
+					}
+			\end{center}
+		\end{frame}
+
+
+% ------------------------------------------------------------------------------
+\section{Bayesian inference}
+
+		\begin{frame}{Bayes theorem}
+			\begin{equation}
+				 \prop(y|x)=\frac{\prop(x|y)\prop(y)}{\prop(x)}
+			\end{equation}
+		\end{frame}
+
+		\begin{frame}{Bayesian inference}
+			Now that we talked about sequential parameter optimization, model ensembles (aka model averaging), and posteriors, ...
+			\\ \vspace*{.2cm}
+			\onslide<2->{
+				we are close to talk about a Bayesian approach. Suppose we formulate econometric model
+				}
+			\onslide<3->{
+				\begin{equation}
+				 	\prop(\theta|y)=\frac{\prop(y|\theta)\prop(\theta)}{\prop(y)}  \quad \varpropto \quad \prop(y|\theta)\prop(\theta)
+				\end{equation}
+				}
+			\onslide<4>{
+				with \textit{prior} parameter probability $\prop(\theta)$ and the \textit{posterior} probability (aka conditional probability) $\prop(y|\theta))$, the likelihood of observables given the parameter.
+				}
+		\end{frame}
+
+		\begin{frame}{Bayesian inference}
+			\onslide<1->{This framework can be used to estimate literally all types of models that we have been discussing, e.g. \\ \vspace*{.2cm}}
+			\begin{itemize}
+				\item<2-> Bayesian linear regression (and thus Bayesian 2SLS)
+				\item<3-> Panel data (\cite{Ning2019})
+				\item<4-> Regression discontinuity (\cite{Hinne2020})
+				\item<4-> Ridge and Lasso regressions for matching have their interpretation already (cf. \cite{Athey2019})
+				\item<5-> Simulating a synthetic control by Bayesian structural time series analysis (\cite{Brodersen2015})
+				\item<5-> Bayesian random forests (\cite{Hill2011,Hahn2020})
+			\end{itemize}
+			\vspace*{.2cm}
+			\onslide<5>{It has the merit of being explicit of prior beliefs about distributions (or probalities of parameters) and thus uncertainties}
+		\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{Structural Models}
+
+	\subsection{why structural}
+
+		\begin{frame}{A far greater uncertainty}
+			\begin{center}
+				\includegraphics[scale=.1625]{PlatosCave.jpg}
+				\captionof{figure}{
+					What do we really now about the world. Image source: \href{https://s.studiobinder.com/wp-content/uploads/2019/12/Platos-Allegory-of-the-Cave-Featured-Image-1.jpg}{\underline{\smash{Studio Binder 2020}}}
+					}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{A far greater uncertainty}
+			\begin{center}
+					\includegraphics[scale=.75]{BlackBoxModels.jpg}
+					\captionof{figure}{	Black Box Models. Source: \cite{Zhao2021}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{We need a theory of change}
+			\begin{center}
+					\includegraphics[scale=.6]{SEM.jpg}
+					\captionof{figure}{Directed Graph Model. Source: \href{https://plato.stanford.edu/entries/causal-models/}{\underline{\smash{Stanford Encyclopedia of Philosophy 2018}}}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{structural models}
+			"graphical representations of structural causal models do not requirethe learner – whether artificial or human – to impose any distributional or functional-form restrictions on the underlying causal mechanisms under study.  The approach remains fully nonparametric, a characteristic it shares with the potential outcomes framework.  At the same time,  however,  crucial identification assumptions,  suchas ignorability, are derived from the properties of the underlying structural model, rather than being assumed to hold a priori.  Causal graphical models thus combine  the  accessibility  and  flexibility  of  potential  outcomes  with  the  preciseness and  analytical  rigor  of  structural  econometrics" (\cite{Hünermund2021})
+		\end{frame}
+
+		\begin{frame}{structural models}
+			Parameters of a probabilistic structural model can be estimated with a Bayesian network approach.
+			\begin{center}
+				\includegraphics[scale=.2]{Bayesian-network.png}
+				\captionof{figure}{Bayesian network. Source: \cite{Melendez2019}}
+			\end{center}
+			Or, through double debiased machine learning \cite{Chernozhukov2018,Jung2021}
+		\end{frame}
+
+		\begin{frame}{The do-calculus}
+			\begin{center}
+				\includegraphics[scale=.3275]{CausalHierarchy2.jpg}
+				\captionof{figure}{The causal hierarchy. Source: \cite{Bareinboim2020}}
+			\end{center}
+		\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{further reads}
+
+	\begin{frame}{sources}
+		\begin{itemize}
+			\item James, Witten, Hastie and Tibshirani (\citeyear{James2013})
+			\begin{itemize}
+				\item introduction to statistical learning (\href{https://www.edx.org/course/statistical-learning}{\underline{\smash{edX}}})
+			\end{itemize}
+			\item Boehmke and Greenwell (2020)
+			\begin{itemize}
+				\item \href{https://bradleyboehmke.github.io/HOML/}{\underline{\smash{Hands-On Machine Learning with R}}}
+			\end{itemize}
+			\item Causal trees
+			\begin{itemize}
+				\item \href{https://grf-labs.github.io/grf/}{\underline{\smash{Generalized Random Forests}}}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+
+
+% ------------------------------------------------------------------------------
+	\begin{frame}[t, allowframebreaks]{References}
+	% [t,allowframebreaks]
+	  \printbibliography
+	\end{frame}
+% ------------------------------------------------------------------------------
+
+%
+\end{document}

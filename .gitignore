@@ -8,16 +8,19 @@
 *.fls
 *.gif
 *.jpg
+*.jpeg
 *.log
 *.nav
 *.out
 *.png
 *.rar
 *.Rproj.user
+*.Rhistory
 *.run.xml
 *.snm
 *.spl
 *.synctex.gz
+*.sty
 *.toc
 *.txt
 *.vrb
@@ -41,3 +44,5 @@ lulogo-sv.pdf
 small-lu-logo.pdf 
 
 .Rproj.user
+
+Main.dta
