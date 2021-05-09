@@ -90,7 +90,7 @@
 				CATE = E(Y_i(1)-Z-i(0)|X_i=x)
 			\end{equation}
  			\vspace*{.2cm}
-			$\rightarrow$ we could look at average differences between treated and untreadted groups within partitions of the observed
+			$\rightarrow$ we could look at average differences between treated and untreated groups within partitions of the observed
 		\end{frame}
 
 		\begin{frame}{causal trees}
@@ -121,7 +121,7 @@
  			\vspace*{.2cm}
 			by "recursively splitting the feature space ... into a set of leaves $L$" (\cite{Wager2018}) \\ \vspace*{.2cm}
 			\onslide<2>{
-				and repeat to build an ensemble of trees $\rightarrow$ random forests. This particularly well suited for heterogeneous treatment effects. Athey and Imbens (\citeyear{Athey2016}) suggest a sort of cross validation procedure for robust causal inference.
+				and repeat to build an ensemble of trees $\rightarrow$ random forests. This particularly well suited for heterogeneous treatment effects. Athey and Imbens (\citeyear{Athey2016}) suggest a sort of cross validation procedure for robust causal inference, see \href{https://grf-labs.github.io/grf/}{\underline{\smash{generalized random forests R package}}}.
 				}
 		\end{frame}
 
@@ -135,7 +135,7 @@
 			\end{equation}
 			\vspace*{.1cm}
 			we can also use machine learning techniques (aka sequential updates / iterative estimation / optimization of parameter values) to estimate
-			\onslide<2>{
+			\onslide<2->{
 				\begin{equation}
 					\hat{beta}^{ml} = \arg \min_{\beta} \sum{i=1}^{N}(Y-\beta X_i)^2 + \lambda (\| \beta \|_q)^{1/q}
 				\end{equation}
@@ -182,7 +182,6 @@
 			\begin{equation}
 				\hat Y_{t,post}(0)  = \mu + \sum_{i=1}^{N}{w_iY_{i,T}^{obs}}
 			\end{equation}
-			% \vspace*{.2cm}
 			by
 			\begin{align}
 				(\hat{\mu}^{ols}, \hat{w}^{ols}) = \arg\min_{\mu, w} \sum_{s=1}^{T_0}\left({Y_{0,T_0-s+1}^{obs} - \mu - \sum_{i=1}^{N}{w_i} \cdot Y_{0,T_0-s+1}^{obs} }\right)^2 + \notag \\
@@ -236,7 +235,7 @@
 				\item<2-> Bayesian linear regression (and thus Bayesian 2SLS)
 				\item<3-> Panel data (\cite{Ning2019})
 				\item<4-> Regression discontinuity (\cite{Hinne2020})
-				\item<4-> Ridge and Lasso regressions for matching have their interpretation already (cf. \cite{Athey2019})
+				\item<4-> Ridge and Lasso regressions have their Bayesian interpretation already (cf. \cite{Athey2019})
 				\item<5-> Simulating a synthetic control by Bayesian structural time series analysis (\cite{Brodersen2015})
 				\item<5-> Bayesian random forests (\cite{Hill2011,Hahn2020})
 			\end{itemize}
@@ -273,20 +272,20 @@
 		\end{frame}
 
 		\begin{frame}{structural models}
-			"[G]raphical representations of structural causal models do not requirethe learner – whether artificial or human – to impose any distributional or functional-form restrictions on the underlying causal mechanisms under study. \\
+			"[G]raphical representations of structural causal models do not requirethe learner - whether artificial or human - to impose any distributional or functional-form restrictions on the underlying causal mechanisms under study. \\ \vspace*{.1cm}
 
-			The approach remains fully nonparametric, a characteristic it shares with the potential outcomes framework.  At the same time,  however,  crucial identification assumptions,  suchas ignorability, are derived from the properties of the underlying structural model, rather than being assumed to hold a priori.  \\
+			The approach remains fully nonparametric, a characteristic it shares with the potential outcomes framework.  At the same time,  however,  crucial identification assumptions,  suchas ignorability, are derived from the properties of the underlying structural model, rather than being assumed to hold a priori.  \\ \vspace*{.1cm}
 
 			Causal graphical models thus combine  the  accessibility  and  flexibility  of  potential  outcomes  with  the  preciseness and  analytical  rigor  of  structural  econometrics" (\cite{Hunermund2021})
 		\end{frame}
 
-		\begin{frame}{structural models}
-			Parameters of a probabilistic structural model can be estimated with a Bayesian network approach.
+		\begin{frame}{structural causal models (SCM)}
+			Parameters of a probabilistic structural model can be estimated with a \href{https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started}{\underline{\smash{Bayesian}}} \href{https://www.bnlearn.com/}{\underline{\smash{network}}} \href{https://github.com/paul-buerkner/brms}{\underline{\smash{approach}}} ...
 			\begin{center}
-				\includegraphics[scale=.185]{Bayesian-network.png}
+				\includegraphics[scale=.175]{Bayesian-network.png}
 				\captionof{figure}{Bayesian network. Source: \cite{Melendez2019}}
 			\end{center}
-			Or, through double debiased machine learning \cite{Chernozhukov2018,Jung2021}
+			... \href{https://cran.r-project.org/web/packages/cSEM/vignettes/cSEM.html}{\underline{\smash{partial least squares}}}, or through \href{https://github.com/VC2015/DMLonGitHub}{\underline{\smash{double debiased machine learning}}} (cf. cite{Chernozhukov2018,Jung2021})
 		\end{frame}
 
 		\begin{frame}{The do-calculus}
@@ -297,9 +296,28 @@
 		\end{frame}
 
 % ------------------------------------------------------------------------------
+\section{Conclusion}
+
+	\begin{frame}{Wrapping it all up}
+		To estimate a causal effect, we aim to compare the outcome to its counterfactual.
+		\begin{itemize}
+			\item<1-> potential outcomes: $ \tau_{ATE}  =  E \{\textcolor{red}{Y}_i(\textcolor{blue}{1})\} - E \{\textcolor{red}{Y}_i(\textcolor{blue}{0})\} $
+			\begin{itemize}
+				\item<2-> RCTs
+				\item<2-> DID \& 2WFE
+				\item<2-> IV \& synthetic controls
+				\item<2->	SCM
+			\end{itemize}
+			\item<3-> with frequentist, Bayesian, or machine learning methods
+			\item<4-> it should be conceptually sound and methodologically robust
+		\end{itemize}
+	\end{frame}
+
+% ------------------------------------------------------------------------------
 \section{further reads}
 
 	\begin{frame}{sources}
+		Beyond the coursebooks, see
 		\begin{itemize}
 			\item James, Witten, Hastie and Tibshirani (\citeyear{James2013})
 			\begin{itemize}
@@ -309,11 +327,30 @@
 			\begin{itemize}
 				\item \href{https://bradleyboehmke.github.io/HOML/}{\underline{\smash{Hands-On Machine Learning with R}}}
 			\end{itemize}
-			\item Causal trees
+			\item Paul Goldsmith-Pinkham 2021
 			\begin{itemize}
-				\item \href{https://grf-labs.github.io/grf/}{\underline{\smash{Generalized Random Forests}}}
+				\item \href{https://github.com/paulgp/applied-methods-phd}{\underline{\smash{applied methods PhD course}}}
+			\end{itemize}
+			\item Nick Huntington-Klein 2021
+			\begin{itemize}
+				\item \href{https://nickchk.com/causalitybook.html}{\underline{\smash{The Effect: An Introduction to Research Design and Causality}}}
+			\end{itemize}
+			\item \cite{Peters2017}
+			\begin{itemize}
+				\item Elements of causal inference: foundations and learning algorithms
+			\end{itemize}
+			\item \cite{Nagarajan2013}
+			\begin{itemize}
+				\item Bayesian Networks in R
 			\end{itemize}
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{deciding on literature}
+		\begin{center}
+			\includegraphics[width = .6\textwidth]{WhatCausalInferenceBookShouldIRead.jpg}
+			\captionof{figure}{decision tree, source: \href{https://www.bradyneal.com/which-causal-inference-book}{\underline{\smash{Brady Neal 2020}}}}
+		\end{center}
 	\end{frame}
 
 

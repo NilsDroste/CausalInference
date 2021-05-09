@@ -1,0 +1,238 @@
+---
+title: 'Advanced Seminar II: Regression Discontinuity Analysis'
+author: "YOUR NAME & Nils Droste"
+date: "`r format(Sys.Date())`"
+output: pdf_document
+---
+  
+Here, we replicate Abou-Chadi, T., & Krause, W. (2018). The causal effect of radical right success on mainstream parties’ policy positions: A regression discontinuity approach. British Journal of Political Science, 1-19. https://doi.org/10.1017/S0007123418000029 
+
+Data replication sets are available in Harvard Datavers at https://dx.doi.org/10.7910/DVN/KYSD5S and online appendices at https://doi.org/10.1017/S0007123418000029.
+
+# Let us prep our environment and load some functions programmed by the authors
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(here)
+library(magrittr)
+source( './functions/rrp_rdd_functions.R' )
+```
+
+Here is what I did to read transform the provided tab separated data into an RData file
+```{r}
+# ds <- read_tsv(here("Abou-ChadiKrause2018",'rrp_rdd.tab'))
+# ds$er.in <- as.factor(ds$er.in)
+# ds$er.in_l <- as.factor(ds$er.in_l)
+# save(ds, file=here("Abou-ChadiKrause2018",'rrp_rdd.RData'))
+```
+
+So that we can follow their procedure (as reported in `rrp_rdd_log.pdf` or `rrp_rdd.r`)
+```{r}
+load( './data/rrp_rdd.RData' )
+```
+
+# Inspecting data.
+  While this should have generally been done at the beginning, we will make use of the `libary(Hmisc)` package to label and describe the data.
+```{r, message=FALSE, warning=FALSE}
+library(Hmisc)
+```
+
+Let us create a vector of labels (from `rrp_rdd.R`)
+```{r}
+labelvector <- c("iso2 character country code", 
+                 "election date",
+                 "CMP-code mainstream party",
+                 "name of mainstream party", 
+                 "party family of mainstream party (CMP-coding)",
+                 "electoral threshold", "electoral threshold (lagged)",
+                 "radical right party vote share (centerd on electoral threshold)",
+                 "radical right party vote share (centerd on electoral threshold, lagged)",
+                 "radical right parliamentary presence (binary indicator)",
+                 "radical right parliamentary presence (binary indicator, lagged)",
+                 "rile score (according to Lowe et al. 2011)", 
+                 "multiculturalism positive (CMP coding)",
+                 "multiculturalism negative (CMP coding)",
+                 "cultural protectionism score (Lowe et al. 2011, first difference)",
+                 "per608 score (first difference)",
+                 "cultural protectionism score (Kim and Fording 2003, first difference)",
+                 "cultural protectionism score (Alonso and da Fonseca 2012, first difference)",
+                 "cultural protectionism score (Meguid 2008, first difference)", 
+                 "environment protection score (Lowe et al. 2011, first difference)") 
+```
+
+Now, let us bind variable names and labels, to print a table (using `kable()` from the `knitr` package) showingus what variables we are dealing with
+
+```{r}
+cbind(VariableName=names(ds),VariableDescription=labelvector) %>% 
+  knitr::kable(caption = "Variables in Abou-Chadi & Krause (2018)")
+```
+
+Then, let us summarise the data by `summary()` (remember also `head()` and `str()` can provide us with an idea of the data)
+```{r}
+summary(ds)
+```
+
+Alright, so let us move on to the analysis part. First, I would want to know what vote shares of extreme right parties we are dealing with (over time).
+
+```{r}
+ds %>% ggplot(mapping = aes(y = er.v.c, x = lubridate::year(as.Date(ds$edate)))) + 
+  geom_line() +
+  xlab("Year") +
+  ylab("Share of radical right party \n with 0 at electoral threshold") +
+  facet_wrap(~iso2c)
+```
+
+Is there something you would want to know about the data? Let us try to inspect that.
+Try and adapt the code below.
+geom_TYPE can be `geom_plot()`, `geom_line()`, `geom_area()`, etc. check https://ggplot2.tidyverse.org/reference/
+```{r}
+# ds %>% ggplot(mapping = aes(y= YAXISVARIABLE, x= XAXISVARIABLE)) + geom_TYPE 
+```
+
+
+# Figure 1: Mainstream party position change on cultural protectionism
+Nice, so now we can directly proceed to replicating the main Fig. 1
+
+```{r}
+p1 <- jump.plot( data = subset( ds , er.v.c_l <= 10 )
+                 , force.var = 'er.v.c_l'
+                 , yvar = 'multic.logit_fd'
+                 , seat.identifier = 'er.in_l'
+                 , polynomial = 3
+)
+p1
+```
+
+That went smoothly. Let us inspect what this `jump.plot()` function does.
+
+```{r}
+# jump.plot() # hold Strg/Cntrl and click on the function. 
+# This should open another tab with the function code.
+# Alternatively, we can also click on the fucntion in our Global Environment.
+```
+
+
+# Table 2: Mainstream party position change on cultural protectionism
+
+Abou-Chadi and Krause also provide estimates. In particular, they provide the Local Average Treatement Effect (LATE) coeficient, which is just above and below the threshold.
+
+```{r}
+rd.multic <- rd.base( data = ds
+                      , force.var = 'er.v.c_l'
+                      , yvar = 'multic.logit_fd'
+                      , seat.identifier = 'er.in_l'
+                      , fixed.effects = 'iso2c'
+                      , clust1 = 'party'
+                      , clust2 = 'edate'
+                      , polynomials = c( 1 , 2 , 3 , 4 )
+                      , bws = NULL
+)
+rd.multic
+```
+
+We can certainly check  what the authors did within their `rd.base()` function. It is relatively advanced, but to cut a long story short: They built an indicator variable for the electoral threshold as we discussed in the lecture, call that indicator variable `above` and use that as an instrumental variable in `AER::ivreg(), based on  
+```{r}
+formula = multic.logit_fd ~ er.in_l + poly(er.v.c_l, 20, raw = TRUE) + 
+    poly(force_above, 20, raw = TRUE) + as.factor(iso2c) | above + 
+    poly(er.v.c_l, 20, raw = TRUE) + poly(force_above, 20, raw = TRUE) + 
+    as.factor(iso2c)
+```
+This is an approach that is normally employed in so called fuzzy RDD designs. This confuses me a bit, not as such (it is standard for fuzzy RDD) but because in their paper they talk about using a sharp RDD approach. Anyway, here you find a somewhat simpler approach in **R**, if you want ***RDD*** code to play around for your own analysis: https://www.econometrics-with-r.org/13-4-quasi-experiments.html 
+
+# Mainstream left and right wing party position change on cultural protectionism
+
+After having established that there is a general LATE, Abou-Chad and Krause proceed by estimating the LATE for both left- and right-wing parties. That can be called estimating *heterogeneous treatment* effects, as the LATE may differ across groups within the treated.
+
+## Table 3: Mainstream left party position change on cultural protectionism
+```{r}
+ds %<>%
+  group_by( iso2c ) %>%
+  mutate( country.mean.rile.logit = mean( rile.logit , na.rm = TRUE )) %>%
+  ungroup( ) %>%
+  group_by( party ) %>%
+  mutate( mean.rile.logit = mean ( rile.logit , na.rm = TRUE )) %>%
+  ungroup( )
+rd.ml <- rd.base( data = subset( ds , ( mean.rile.logit < country.mean.rile.logit ))
+                  , force.var = 'er.v.c_l'
+                  , yvar = 'multic.logit_fd'
+                  , seat.identifier = 'er.in_l'
+                  , fixed.effects = 'iso2c'
+                  , clust1 = 'party'
+                  , clust2 = 'edate'
+                  , polynomials = c( 1 , 2 , 3 , 4 )
+                  , bws = NULL
+)
+rd.ml
+```
+
+## Table 4: Mainstream right party position change on cultural protectionism
+```{r}
+rd.mr <- rd.base( data = subset( ds , ( mean.rile.logit > country.mean.rile.logit ))
+                  , force.var = 'er.v.c_l'
+                  , yvar = 'multic.logit_fd'
+                  , seat.identifier = 'er.in_l'
+                  , fixed.effects = 'iso2c'
+                  , clust1 = 'party'
+                  , clust2 = 'edate'
+                  , polynomials = c( 1 , 2 , 3 , 4 )
+                  , bws = NULL
+)
+rd.mr
+```
+
+Interesting, so right wing parties respond stronger to the presence of radical right parties' presence in parliament.
+
+# Robustness Checks
+
+To top up, Abou-Chadi and Krause, provide several robustness checks to show how stable their results are.
+
+## Varying bandwith around electoral threshold
+
+Here is how they calculated the data plotted in Figure 2.
+```{r, echo=TRUE, results='hide'}
+rd.sens.data <- rd.sens( data = ds
+                         , force.var = 'er.v.c_l'
+                         , yvar = 'multic.logit_fd'
+                         , seat.identifier = 'er.in_l'
+                         , fixed.effects = 'iso2c'
+                         , clust1 = 'party'
+                         , clust2 = 'edate'
+                         , polynomials = c( 1 , 2 )
+                         , bws = seq( 1.5 , 10 , .25 )
+                         )
+rd.sens.data
+```
+
+## Only countries with legally binding thresholds.
+Figure 3: Mainstream party position change on cultural protectionism, countries with legally fixed threshold
+```{r}
+c.list <- c( 'AT' , 'BG' , 'CZ' , 'DE' , 'EE' , 'GR' , 'LV' , 'NL' , 'PL' , 'RO' , 'SE' , 'SI')
+ds %>%
+  filter( iso2c %in% c.list ) %>%
+  filter( !( iso2c == 'AT' & edate < '1994-01-01' )) %>%
+  filter( !( iso2c == 'GR' & edate < '1993-01-01' )) %>%
+  filter( !( iso2c == 'SI' & edate < '2000-01-01' )) -> ds.fixed
+p3 <- jump.plot( data = subset( ds.fixed , er.v.c_l <= 10 )
+                 , force.var = 'er.v.c_l'
+                 , yvar = 'multic.logit_fd'
+                 , seat.identifier = 'er.in_l'
+                 , polynomial = 3
+)
+p3
+```
+
+Table 5: Mainstream party position change on cultural protectionism, countries with legally fixed threshold
+```{r}
+rd.fixed <- rd.base( data = ds.fixed
+                     , force.var = 'er.v.c_l'
+                     , yvar = 'multic.logit_fd'
+                     , seat.identifier = 'er.in_l'
+                     , fixed.effects = 'iso2c'
+                     , clust1 = 'party'
+                     , clust2 = 'edate'
+                     , polynomials = c( 1 , 2 , 3 , 4 )
+                     , bws = NULL
+)
+rd.fixed
+```
+
+Seems, overall, and beside their advanced R-programming, Abou-Chadi and Krause provide relatively reliable results that main party positions change when a radical right party is present in parliament. 
