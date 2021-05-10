@@ -49,9 +49,11 @@ tab3_mod1 <- lm(change_fcover_vil~treatstat_vil
                 + dist_road
                 + l1_area
                 + as.factor(subcounty), 
-                df
+                df, weights = SPct_Data_vil
 )
-summary(tab3_mod1, vcov=function(x) cluster.vcov(tab3_mod1, df[, "village"]))
+summary(tab3_mod1)
+coeftest(tab3_mod1,  cluster.vcov(tab3_mod2, df[, "village"]))        
+
 # We have now approximately reproduced model one from table 3 in Jayachandran et al. 2017.
 # The effect of paying private forest owners is the coefficient of the treamentstat_vil variable 
 
@@ -78,9 +80,10 @@ tab3_mod2 <- lm(change_fcover_vil~treatstat_vil
                 + photo2011_act
                 # + pfo_satdate_* # not found
                 + as.factor(subcounty),
-                df
+                df, weights = SPct_Data_vil
 )
-summary(tab3_mod2, vcov=function(x) cluster.vcov(tab3_mod2, df[, "village"]))
+summary(tab3_mod2)
+coeftest(tab3_mod2,  cluster.vcov(tab3_mod2, df[, "village"]))
 
 ############################################################################
 # Task 4
@@ -97,10 +100,11 @@ tab3_mod3 <- lm(log_change_fcover_vil~treatstat_vil
                 + photo1991_act
                 + photo2011_act
                 # + pfo_satdate_* # not found
-                + as.factor(subcounty),
+                + as.factor(subcounty), weights = SPct_Data_vil,
                 df
 )
-summary(tab3_mod3, vcov=function(x) cluster.vcov(tab3_mod3, df[, "village"]))
+summary(tab3_mod3)
+coeftest(tab3_mod3,  cluster.vcov(tab3_mod3, df[, "village"]))
 
 
 ############################################################################
