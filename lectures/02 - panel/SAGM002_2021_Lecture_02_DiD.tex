@@ -233,9 +233,9 @@
 			\begin{table}
 				\caption{An example panel data structure}
 				\footnotesize
-				\begin{tabular}{|p{1.25cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}||p{1.5cm}|}
+				\begin{tabular}{|p{1.8cm}|p{1.6cm}|p{1.6cm}|p{1.6cm}||p{1.6cm}|}
 					\hline
-					\textbf{individual} & \textbf{time} & \textbf{Y} & \textbf{X} & \textbf{D} \\
+					\textbf{individual (i)} & \textbf{time (t)} & $\textbf{Y}_i$ & $\textbf{X}_i$ & $\textbf{D}_{it}$ \\
 					\hline
 					A & 1 & 0.8 & 0.3 & 0 \\
 					A & 2 & 0.7 & 0.2 & 0 \\
@@ -323,12 +323,12 @@
 			\\ \vspace*{.25cm}
 
 			\begin{equation}
-				Y_{it} = \alpha_i + \theta_t + T_{it} + X_{it} + \varepsilon_i
+				Y_{it} = \alpha_i + \theta_t + \tau D_{it} + \beta X_{it} + \varepsilon_i
 			\end{equation}
 
 			\vspace*{.25cm}
-			where $\alpha$ individual and $\theta$ time fixed effects, \\
-			$T$ a binary treatment indicator ($T=D \times P$), \\ possibly a controls vector $X_i$, \\
+			where $\alpha_i$ individual and $\theta_t$ time fixed effects, respectively \\
+			\textbf{Note} that $D$ here is a binary treatment indicator ($D_{it}=D_{i} \times P_{t}$), \\ possibly a vector of control variables $X_i$, \\
 			and error term $\varepsilon_i$, assumed to be normally distributed and centered around $0$, indepdendent of everything else.
 		\end{frame}
 
@@ -408,7 +408,6 @@
 			\end{center}
 		\end{frame}
 
-	\subsection{intuition}
 		\begin{frame}{notation}
 			Turns out: 2WFE DiD estimator is a weighted average of these comparisons
 			\begin{center}
@@ -417,7 +416,6 @@
 			\end{center}
 		\end{frame}
 
-		\subsection{intuition}
 			\begin{frame}{notation}
 				Even worse, a positive but staggered slope change, can even change the sign of the DD estimate
 				\begin{center}
@@ -433,7 +431,7 @@
 			\begin{itemize}
 				\item<2-> \cite{Athey2020}
 					\begin{itemize}
-						\item under random adoption dates, the DID is unbiased
+						\item under random adoption dates, a weighted DID is unbiased
 						\item comparing treated with not-yet treated
 					\end{itemize}
 				\item<3-> \cite{Goodman-Bacon2018}
@@ -472,7 +470,7 @@
 				\end{itemize}
 				\item \cite{Imai2020}
 				\begin{itemize}
-					\item identify some proplematic negative weigthing in 2WFE
+					\item identify some problematic negative weigthing in 2WFE
 					\item they propose weighting or matching \href{https://imai.fas.harvard.edu/research/twoway.html}{\underline{\smash{Imai 2020}}}
 				\end{itemize}
 			\end{itemize}
