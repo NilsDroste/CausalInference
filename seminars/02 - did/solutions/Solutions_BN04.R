@@ -36,8 +36,9 @@ summary(mod5, vcov=vcovHC(mod5,method = "arellano"))
 mod3_lm <- lm(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year), data=smoke)
 mod3_lm %>% summary(vcov=vcovHC(mod3_lm,"HC1"))
 
-mod3_plm <- plm(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year), effect = "individual" , model = "random", data=smoke)
+mod3_plm <- plm(lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year), index = c("ctrcode"), effect = "individual" , model = "random", data=smoke)
 # table(index(smoke), useNA = "ifany")
+
 
 smoke %>% select(ctrcode, year) %>% table() # sometimes multiple measurements for one year.
 
