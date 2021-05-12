@@ -1,6 +1,6 @@
 # Causal inference in environmental and social science
 
-The course is an interdisciplinary third-cycle course offered by the Department of Political Science and financed by the two-year graduate research school ClimBEco – Climate Biodiversity and Ecosystem Services in a changing world.
+The course is an interdisciplinary third-cycle course offered by the [Department of Political Science] (https://www.svet.lu.se/en/) and financed by the two-year graduate research school [ClimBEco – Climate Biodiversity and Ecosystem Services in a changing world] (https://www.cec.lu.se/education/postgraduate-studies/climbeco).
 
 ## 1. Learning Outcomes
 Participants will be able to accomplish the following objectives by the end of the course:
