@@ -17,8 +17,8 @@ This course gives an overview of statistical techniques that are employed in soc
 
 Based on different concepts and theories of causal inference, the course seeks to provide Ph.D. students from different disciplines with an understanding of the current state of quantitative causal inference. The main modules of the course are:
 
--	Module 1: The gold-standard – experiments. including an introductory note on causality and causation, randomized-controlled trials, and differences-in differences;
--	Module 2: (Semi) Natural Experiments, including panel data estimations and staggered treatment corrections;
+-	Module 1: The gold-standard – experiments, incl. an introductory note on causality and causation, randomized-controlled trials;
+-	Module 2: (Semi) Natural Experiments, including difference-in-differences, panel data estimations, and staggered treatment corrections;
 -	Module 3: Simulated counterfactuals, including matching methods and synthetic control groups;
 -	Module 4: instrumental variables and regression discontinuities
 -	Module 5: an outlook into structural equation models, Bayesian inference, and machine learning techniques
