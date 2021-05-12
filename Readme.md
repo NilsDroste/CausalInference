@@ -17,11 +17,11 @@ This course gives an overview of statistical techniques that are employed in soc
 
 Based on different concepts and theories of causal inference, the course seeks to provide Ph.D. students from different disciplines with an understanding of the current state of quantitative causal inference. The main modules of the course are:
 
--	Module 1: The gold-standard – experiments, incl. an introductory note on causality and causation, randomized-controlled trials;
--	Module 2: (Semi) Natural Experiments, including difference-in-differences, panel data estimations, and staggered treatment corrections;
--	Module 3: Simulated counterfactuals, including matching methods and synthetic control groups;
--	Module 4: instrumental variables and regression discontinuities
--	Module 5: an outlook into structural equation models, Bayesian inference, and machine learning techniques
+-	Module 1: The gold-standard – experiments, incl. a note on causality, randomized-controlled trials;
+-	Module 2: (Semi) Natural Experiments, incl. difference-in-differences, panel data estimations, and staggered treatment;
+-	Module 3: Simulated counterfactuals, incl. matching methods and synthetic control groups;
+-	Module 4: Instrumental variables and regression discontinuities
+-	Module 5: An outlook into structural equation models, Bayesian inference, and machine learning techniques
 
 Each of the modules above will contain a lecture on the state-of-the-art and a seminar with applied replications of seminal papers in environmental policy evaluation. In the seminars students will also have to (collaboratively) solve causal inference problems. Moreover, students will, after the end of the course, write a short research project report of a causal inference project of their own choice to help them to apply causal inference techniques in their own field of Ph.D. research.
 
