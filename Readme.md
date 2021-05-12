@@ -20,7 +20,8 @@ Based on different concepts and theories of causal inference, the course seeks t
 -	Module 1: The gold-standard – experiments. including an introductory note on causality and causation, randomized-controlled trials, and differences-in differences;
 -	Module 2: (Semi) Natural Experiments, including panel data estimations and staggered treatment corrections;
 -	Module 3: Simulated counterfactuals, including matching methods and synthetic control groups;
--	Module 4: instruments, interruptions, and other cutting edges, including instrumental variables, regression discontinuity designs, and a note on structural equation models.
+-	Module 4: instrumental variables and regression discontinuities
+-	Module 5: an outlook into structural equation models, Bayesian inference, and machine learning techniques
 
 Each of the modules above will contain a lecture on the state-of-the-art and a seminar with applied replications of seminal papers in environmental policy evaluation. In the seminars students will also have to (collaboratively) solve causal inference problems. Moreover, students will, after the end of the course, write a short research project report of a causal inference project of their own choice to help them to apply causal inference techniques in their own field of Ph.D. research.
 
