@@ -175,7 +175,7 @@
 				Y_{i} = \alpha_2 + \beta_2 {D}_{i} + \gamma_2 W_{i} + \varepsilon_{i}
 			\end{equation}
 			\begin{equation}
-				X_{i} = \alpha_1 + \beta_1 Z_{i} + \gamma_1 W_{i} + \upsilon_{i}
+				D_{i} = \alpha_1 + \beta_1 Z_{i} + \gamma_1 W_{i} + \upsilon_{i}
 			\end{equation}
 			\vspace*{.15cm}
 			A condition was relevance, i.e. $E((D_i|Z=1)-(D_i|Z=0)) \neq 0$, or $\Cov(Z_i,D_i|W_i) \neq 0$
@@ -223,7 +223,7 @@
 		\begin{frame}{Intuition}
 			Suppose we believe there is an effect for which assignment is non-random, but the cut-off at which treatment is assigned is quasi-random (cf. \cite{Thistlewaite2016}). \\ \vspace*{.15cm}
 			\begin{center}
-				\onslide<2>{\includegraphics[width=.75\textwidth]{SpatialRDD_example.jpg}
+				\onslide<2>{\includegraphics[width=.7\textwidth]{SpatialRDD_example.jpg}
 				\captionof{figure}{The border between Haiti and the Dominican Republic. Image source: \cite{Wuepper2020}}
 				}
 			\end{center}
@@ -251,7 +251,7 @@
 				\end{column}
 			\end{columns}
 			\scriptsize{Focussing on effects just around the cutoff value. Image source: \href{http://nickchk.com/causalgraphs.html}{\underline{\smash{Huntington-Klein 2018}}}}
-			\onslide<2>{\\ \\ $\rigtharrow$ Do you see the IV in RDD?}
+			\onslide<2>{\\ \vspace*{.2cm} $\rightarrow$ Do you see the IV in RDD?}
 		\end{frame}
 
 	\subsection{notation}
