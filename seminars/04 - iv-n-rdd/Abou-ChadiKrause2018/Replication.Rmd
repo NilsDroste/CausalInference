@@ -7,7 +7,7 @@ output: pdf_document
   
 Here, we replicate Abou-Chadi, T., & Krause, W. (2018). The causal effect of radical right success on mainstream parties’ policy positions: A regression discontinuity approach. British Journal of Political Science, 1-19. https://doi.org/10.1017/S0007123418000029 
 
-Data replication sets are available in Harvard Datavers at https://dx.doi.org/10.7910/DVN/KYSD5S and online appendices at https://doi.org/10.1017/S0007123418000029.
+Data replication sets are available in Harvard Dataverse at https://dx.doi.org/10.7910/DVN/KYSD5S and online appendices at https://doi.org/10.1017/S0007123418000029.
 
 # Let us prep our environment and load some functions programmed by the authors
 ```{r, message=FALSE, warning=FALSE}

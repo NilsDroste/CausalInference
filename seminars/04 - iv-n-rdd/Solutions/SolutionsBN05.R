@@ -18,12 +18,12 @@ spm <- read_dta(here("BinderNeumayer2005", "Binder spm.dta"))
 
 # Tip, use AER:: for non-panel estimates and plm:: (or fixest::)
 
-ivmod1 <- ivreg(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2)
+ivmod1 <- ivreg(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + lnengopc72 + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2)
 summary(ivmod1,cov=vcovHC(ivmod1,"HC1"))
 
 # Tests
 # on aspects of the IV (i.e. first stage)
-first_stage <- lm(lnengopc ~ lningopc + lningoparticip + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2, na.action=na.exclude)
+first_stage <- lm(lnengopc ~ lningopc + lningoparticip + lnengopc72 + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2, na.action=na.exclude)
 
 # F-test for validity
 instrFtest <- waldtest(first_stage,.~.-lningopc-lningoparticip)
@@ -37,16 +37,26 @@ summary(Hausman_reg)
 HausWutest <- waldtest(Hausman_reg,.~.-residuals(first_stage))
 HausWutest # we clearly reject endogeneity
 
-# continuing the replication without further testing, but you are welcome to check.
+# there also is a Sargan test for instrument validity, see e.g.
+# http://eclr.humanities.manchester.ac.uk/index.php/IV_in_R or
+# https://www.r-bloggers.com/2013/09/detecting-weak-instruments-in-r/ for the  Stock and Yogo (2005) approach
+
+# or, as easy as using inbuild diagnostics of the AER package
+summary(ivmod1, vcov = sandwich, diagnostics = TRUE)
+
+# continuing the replication with these easy tests where possible, but you are welcome to dig deeper.
 
 
 ivmod2 <- plm(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), index = c("ctrcode"), effect = "individual" , model = "random", data=so2)
 summary(ivmod2, vcov=vcovHC(ivmod2,method = "arellano"))
 
+ivmod3 <- ivreg( lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year) | . - lnengopc + ingoparticip + lnengopc72, data = smoke)
+summary(ivmod3, vcov = sandwich, diagnostics = TRUE)
+
 ivmod4 <-
   ivreg(lnspm ~ lnengopc + lnenergy + lngdp + lngdpsq + lngdpcu + polity + lnliter + resid + cityunkn + centcity + lndens + coast + as.factor(year) |
           . - lnengopc + ingoparticip + lnengopc72, data= spm)
-summary(ivmod4,cov=vcovHC(ivmod1,"HC1"))
+summary(ivmod4, vcov = sandwich, diagnostics = TRUE)
 
 ivmod5 <-
   plm(lnspm ~ lnengopc + lnenergy + lngdp + lngdpsq + lngdpcu + polity + lnliter + resid + cityunkn + centcity + lndens + coast + as.factor(year) |
