@@ -14,12 +14,23 @@ so2 <- read_dta(here("BinderNeumayer2005", "Binder SO2.dta"))
 spm <- read_dta(here("BinderNeumayer2005", "Binder spm.dta"))
 
 
-# TODO: TASK: Estimate Task Table 3 with instruments ----
+# TODO: TASK: Estimate Task Table 3 with instruments 
+
+# by hand
+
+ivmod1_1stage <- lm(lnengopc ~ lningopc + lningoparticip + lnengopc72 + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2,na.action=na.exclude)
+
+Fstage_preds <- predict(ivmod1_1stage)
+
+ivmod1_2ndstage <- lm(lnso2med ~ Fstage_preds + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2)
+
+summary(ivmod1_2ndstage)
+
 
 # Tip, use AER:: for non-panel estimates and plm:: (or fixest::)
 
 ivmod1 <- ivreg(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + lnengopc72 + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2)
-summary(ivmod1,cov=vcovHC(ivmod1,"HC1"))
+summary(ivmod1)
 
 # Tests
 # on aspects of the IV (i.e. first stage)

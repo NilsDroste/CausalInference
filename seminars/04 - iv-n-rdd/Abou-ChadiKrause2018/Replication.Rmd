@@ -14,7 +14,7 @@ Data replication sets are available in Harvard Dataverse at https://dx.doi.org/1
 library(tidyverse)
 library(here)
 library(magrittr)
-source( './functions/rrp_rdd_functions.R' )
+source( here('Abou-ChadiKrause2018/rrp_rdd_functions.R' ))
 ```
 
 Here is what I did to read transform the provided tab separated data into an RData file

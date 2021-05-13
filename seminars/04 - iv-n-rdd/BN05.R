@@ -20,7 +20,6 @@ spm <- read_dta(here("BinderNeumayer2005", "Binder spm.dta"))
 
 
 
-
 # TODO: Did you get model 5 to work? Why do you think that is?
 
 
