@@ -180,8 +180,8 @@
 			\vspace*{.15cm}
 			A condition was relevance, i.e. $E((D_i|Z=1)-(D_i|Z=0)) \neq 0$, or $\Cov(Z_i,D_i|W_i) \neq 0$
 			\begin{itemize}
-			 \item to estimate IV, $\widehat{\beta}=\frac{\Cov(Y_i,Z_i)}{\Cov(Z_i,D_i|W_i)}$
-			 \item problematic when $\Cov(Z_i,D_i|W_i) \to 0$ as $\Delta Z$ grows large even for small variations
+			 \item to estimate IV, $\widehat{\beta}_2=\frac{\Cov(Y_i,Z_i)}{\Cov(Z_i,D_i|W_i)}$
+			 \item problematic when $\Cov(Z_i,D_i|W_i) \to 0$ as $\Delta \beta_2$ grows large even for small variations
 			\end{itemize}
 		\end{frame}
 
@@ -412,7 +412,7 @@
 			\begin{itemize}
 				\item identify a causal effect at a (quasi-)randomly occuring break point that introduces treatment
 				\item are the youngest "classical" causal inference methods and seen as favorable
-				\item use breaks that can occur in space, time, institutions, etc. pp. 
+				\item use breaks that can occur in space, time, institutions, etc. pp.
 				% \item go find some discontinuities
 			\end{itemize}
 		\end{frame}

@@ -16,7 +16,7 @@ library(tidyverse)
 
 
 # Load data
-load("../Data/ETS_analysis.RData")
+load(here("BayerAklin2020/Data/ETS_analysis.RData"))
 
 #################################################################################
 # Assess goodness-of-match

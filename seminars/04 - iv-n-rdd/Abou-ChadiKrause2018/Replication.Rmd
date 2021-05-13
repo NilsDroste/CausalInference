@@ -1,6 +1,6 @@
 ---
-title: 'Advanced Seminar II: Regression Discontinuity Analysis'
-author: "YOUR NAME & Nils Droste"
+title: 'Replication Seminar: Regression Discontinuity Analysis'
+author: "Nils Droste"
 date: "`r format(Sys.Date())`"
 output: pdf_document
 ---

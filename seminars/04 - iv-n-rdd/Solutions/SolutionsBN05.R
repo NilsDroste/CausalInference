@@ -21,6 +21,25 @@ spm <- read_dta(here("BinderNeumayer2005", "Binder spm.dta"))
 ivmod1 <- ivreg(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2)
 summary(ivmod1,cov=vcovHC(ivmod1,"HC1"))
 
+# Tests
+# on aspects of the IV (i.e. first stage)
+first_stage <- lm(lnengopc ~ lningopc + lningoparticip + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), data=so2, na.action=na.exclude)
+
+# F-test for validity
+instrFtest <- waldtest(first_stage,.~.-lningopc-lningoparticip)
+instrFtest # we clearly reject the NULL of irrelevance
+
+# testing for exogeneity
+# Hausman-Wu test
+# adding in the residuals from first stage into second stage
+Hausman_reg <- lm(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) + residuals(first_stage), data=so2)
+summary(Hausman_reg)
+HausWutest <- waldtest(Hausman_reg,.~.-residuals(first_stage))
+HausWutest # we clearly reject endogeneity
+
+# continuing the replication without further testing, but you are welcome to check.
+
+
 ivmod2 <- plm(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) | lningopc + lningoparticip + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year), index = c("ctrcode"), effect = "individual" , model = "random", data=so2)
 summary(ivmod2, vcov=vcovHC(ivmod2,method = "arellano"))
 
@@ -65,8 +84,8 @@ which(so2$so2med==0) # this gives you the row numbers where so2med is equal to 0
 # let us check which countries these values are from
 so2 %>% filter(so2med==0) %>% select(ctrcode) %>% table()
 
-# # what if we excluded those values and reran the regression?
-# let us respecify the log transformation
+# # what if we transformed those values and reran the regression?
+# let us respecify with  ateslog transformation
 
 so2_new <- so2 %>% mutate(lnso2med_new = log1p(so2med)) 
 

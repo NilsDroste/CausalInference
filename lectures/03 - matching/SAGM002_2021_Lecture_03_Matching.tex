@@ -95,9 +95,9 @@
 				\end{itemize}
 				\item<2-> unconfoundedness (strong ignorability)
 				\begin{itemize}
-					\item<2-> $(Y(1), Y(0)) \perp T$: treatment assignment is independent of the outcomes
+					\item<2-> $(Y(1), Y(0)) \perp D$: treatment assignment is independent of the outcomes
 					\item<2-> i.e. no omitted variable bias (recall the storch example)
-					\item<2-> or, at least, conditional unconfoundedness  $(Y(1), Y(0)) \perp T {}|{} X$
+					\item<2-> or, at least, conditional unconfoundedness  $(Y(1), Y(0)) \perp D {}|{} X$
 				\end{itemize}
 			\end{itemize}
 			\vspace*{.25cm} \onslide<3-> {$\rightarrow \pi(X_i) = Pr(D_i = 1 | X_i)$ or \textit{propensity score} can be used for matching}
@@ -270,7 +270,7 @@
 		\end{frame}
 
 		\begin{frame}{eXtreme Gradient Boosting (XGBoost)}
-			Machine learning such as XGBoost or even ensambles can also be used to
+			Machine learning such as XGBoost or even ensembles can also be used to
 			\begin{center}
 				\includegraphics[width=.9\textwidth]{XGBoost.png}
 				\captionof{figure}{Code source: \href{https://blog.quantinsti.com/xgboost-python/}{\underline{\smash{Quant Insti}}}}
@@ -426,8 +426,8 @@
 			\begin{itemize}
 				\item compare a single treated unit group with an untreated quasi-counterfactual
 				\item you can compute placebo tests for the effect on an untreated unit
-				\item so far, has not been \text{widely} applied (for examples see \cite{Abadie2020}
-				\item I think it underestimated (i.e. by applied researchers)
+				\item so far, has not been \text{widely} applied (for examples see \cite{Abadie2020})
+				\item I think it is so far underestimated (i.e. by applied researchers)
 			\end{itemize}
 		\end{frame}
 

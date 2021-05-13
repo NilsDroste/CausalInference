@@ -1,5 +1,8 @@
 #source dependent code here
 library(Matching)
+library(here)
+library(doBy)
+library(Hmisc)
 #need:
 #Balance5.R
 #caclBy.R
@@ -7,7 +10,7 @@ library(Matching)
 #mech function multi impute.R
 
 #mount data
-costa <- read.csv(file="YOUR DIRECTORY/2000_mydata_mech_12_13.csv")
+costa <- read.csv(here("Ferraro2014/replication","2000_mydata_mech_12_13.csv"))
 
 
 #Misc
