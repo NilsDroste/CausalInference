@@ -200,11 +200,21 @@
 		\begin{frame}{intermediate summary}
 			Instrumental variables allow us to \\ \vspace*{.5cm}
 			\begin{itemize}
-				\item isolate a treatment effect by looking at the outcomes of exogeneously caused variation
-				\item it is considered a very robust causal inference, but assumptions are somewhat crucial
+				\item isolate a treatment effect by looking at the outcomes of exogeneously caused treatment variation
+				\item it is considered a very robust causal inference, but assumptions are \textit{somewhat} crucial
 				\item mainly it is theory and reason that make a "valid instrument"
 				\item there is loads of tests, I do not think they alone suffice
 			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{A first thought experiment}
+			\begin{center}
+				\only<1>{\includegraphics[scale=.2]{Binder}}
+				\only<2>{Do you think this is a valid instrument? \\\vspace*{.5cm}
+								 \includegraphics[scale=.3]{BinderDAG.jpg}
+								 \captionof{figure}{reformulating \cite{Binder2005}: a (partial DAG)}
+								 }
+			\end{center}
 		\end{frame}
 
 % ------------------------------------------------------------------------------
@@ -241,7 +251,7 @@
 				\end{column}
 			\end{columns}
 			\scriptsize{Focussing on effects just around the cutoff value. Image source: \href{http://nickchk.com/causalgraphs.html}{\underline{\smash{Huntington-Klein 2018}}}}
-			\onslide<2>{$rigtharrow$ Do you see the IV in RDD?}
+			\onslide<2>{\\ \\ $\rigtharrow$ Do you see the IV in RDD?}
 		\end{frame}
 
 	\subsection{notation}
@@ -359,8 +369,8 @@
 		\begin{frame}{examples}
 			There are discontiuities in space
 			\begin{center}
-				\only<1>{\includegraphics[scale=.6]{SpaceRDD.jpg} \captionof{figure}{\cite{Wuepper2020b}}}
-				\only<2>{\includegraphics[scale=.4]{SpaceRDD2.jpg} \captionof{figure}{Regression discontiuities in covariates but not in vegetation potential, \cite{Wuepper2020b}}}
+				\only<1>{\includegraphics[scale=.6]{SpaceRDD.jpg} \captionof{figure}{\cite{Wuepper2020a}}}
+				\only<2>{\includegraphics[scale=.4]{SpaceRDD2.jpg} \captionof{figure}{Regression discontiuities in covariates but not in vegetation potential, \cite{Wuepper2020a}}}
 			\end{center}
 		\end{frame}
 
