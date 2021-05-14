@@ -184,13 +184,13 @@
 			Instead of ordinary least squares \\
 				\vspace*{.1cm}
 			\begin{equation}
-				\hat{beta}^{ols} = \arg \min_{\beta} \sum{i=1}^{N}(Y-\beta X_i)^2
+				\hat{beta}^{ols} = \arg \min_{\beta} \sum_{i=1}^{N}(Y-\beta X_i)^2
 			\end{equation}
 			\vspace*{.1cm}
 			we can also use machine learning techniques (aka sequential updates / iterative estimation / optimization of parameter values) to estimate
 			\onslide<2->{
 				\begin{equation}
-					\hat{beta}^{ml} = \arg \min_{\beta} \sum{i=1}^{N}(Y-\beta X_i)^2 + \lambda (\| \beta \|_q)^{1/q}
+					\hat{beta}^{ml} = \arg \min_{\beta} \sum_{i=1}^{N}(Y-\beta X_i)^2 + \lambda (\| \beta \|_q)^{1/q}
 				\end{equation}
 			}
 			\onslide<3>{
@@ -204,7 +204,7 @@
 			Or we use neural networks, where we transform \\
 				\vspace*{.1cm}
 			\begin{equation}
-				Z_{ik}^{(1)} = \sum{j=1}^{K}\beta_{kj}{(1)}X_{ij} \quad  \textrm{ for }  \quad  k = i, ...  , K_1
+				Z_{ik}^{(1)} = \sum_{j=1}^{K}\beta_{kj}{(1)}X_{ij} \quad  \textrm{ for }  \quad  k = i, ...  , K_1
 			\end{equation}
 				\vspace*{.1cm}
 			with $K$ covariates (aka features) and latent (aka unobserved / hidden node) variable $Z_jk$, e.g. into a recitified linear function $ g(z) = z1_{z>0}	$. \\
@@ -371,6 +371,7 @@
 			\end{itemize}
 			\item<3-> with frequentist, Bayesian, or machine learning methods
 			\item<4-> it should be conceptually sound and methodologically robust
+			\item<5> I think the relation with theory should be healthy (inductively so or deductive)
 		\end{itemize}
 	\end{frame}
 
