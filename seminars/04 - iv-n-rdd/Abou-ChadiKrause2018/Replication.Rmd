@@ -14,7 +14,7 @@ Data replication sets are available in Harvard Dataverse at https://dx.doi.org/1
 library(tidyverse)
 library(here)
 library(magrittr)
-source( here('Abou-ChadiKrause2018/rrp_rdd_functions.R' ))
+source( here::here('Abou-ChadiKrause2018/rrp_rdd_functions.R' ))
 ```
 
 Here is what I did to read transform the provided tab separated data into an RData file
@@ -27,7 +27,7 @@ Here is what I did to read transform the provided tab separated data into an RDa
 
 So that we can follow their procedure (as reported in `rrp_rdd_log.pdf` or `rrp_rdd.r`)
 ```{r}
-load( './data/rrp_rdd.RData' )
+load( here::here('Abou-ChadiKrause2018/rrp_rdd.RData' ))
 ```
 
 # Inspecting data.
@@ -97,7 +97,7 @@ p1 <- jump.plot( data = subset( ds , er.v.c_l <= 10 )
                  , force.var = 'er.v.c_l'
                  , yvar = 'multic.logit_fd'
                  , seat.identifier = 'er.in_l'
-                 , polynomial = 3
+                 , polynomial = 1
 )
 p1
 ```
@@ -144,13 +144,13 @@ After having established that there is a general LATE, Abou-Chad and Krause proc
 
 ## Table 3: Mainstream left party position change on cultural protectionism
 ```{r}
-ds %<>%
-  group_by( iso2c ) %>%
-  mutate( country.mean.rile.logit = mean( rile.logit , na.rm = TRUE )) %>%
-  ungroup( ) %>%
-  group_by( party ) %>%
-  mutate( mean.rile.logit = mean ( rile.logit , na.rm = TRUE )) %>%
-  ungroup( )
+ds <- ds %>%
+  dplyr::group_by( iso2c ) %>%
+  dplyr::mutate( country.mean.rile.logit = mean( rile.logit , na.rm = TRUE )) %>%
+  dplyr::ungroup( ) %>%
+  dplyr::group_by( party ) %>%
+  dplyr::mutate( mean.rile.logit = mean ( rile.logit , na.rm = TRUE )) %>%
+  dplyr::ungroup( )
 rd.ml <- rd.base( data = subset( ds , ( mean.rile.logit < country.mean.rile.logit ))
                   , force.var = 'er.v.c_l'
                   , yvar = 'multic.logit_fd'

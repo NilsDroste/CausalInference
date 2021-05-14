@@ -1,4 +1,4 @@
-# I stole this from Andre Baker: https://github.com/andrewchbaker/DiD_Slides/blob/master/DiD.Rmd 
+# I stole this from Andre Baker: https://github.com/andrewchbaker/DiD_Slides/blob/master/DiD.Rmd, thx dude!
 
 library(tidyverse)
 library(here)

@@ -84,10 +84,10 @@
 	\subsection{causal trees}
 
 		\begin{frame}{causal trees}
-			Recall, the conditional average treatment effect (cf. cite{Athey2016}) \\
+			Recall, the conditional average treatment effect (cf. \cite{Athey2016}) \\
 				\vspace*{.2cm}
 			\begin{equation}
-				CATE = E(Y_i(1)-Z-i(0)|X_i=x)
+				CATE = E(Y_i(1)-Y_i(0)|X_i=x)
 			\end{equation}
  			\vspace*{.2cm}
 			$\rightarrow$ we could look at average differences between treated and untreated groups within partitions of the observed
@@ -121,11 +121,64 @@
  			\vspace*{.2cm}
 			by "recursively splitting the feature space ... into a set of leaves $L$" (\cite{Wager2018}) \\ \vspace*{.2cm}
 			\onslide<2>{
-				and repeat to build an ensemble of trees $\rightarrow$ random forests. This particularly well suited for heterogeneous treatment effects. Athey and Imbens (\citeyear{Athey2016}) suggest a sort of cross validation procedure for robust causal inference, see \href{https://grf-labs.github.io/grf/}{\underline{\smash{generalized random forests R package}}}.
+				and repeat to build an ensemble of trees $\rightarrow$ random forests. This particularly well suited for heterogeneous treatment effects. Athey and Imbens (\citeyear{Athey2016}) suggest an \textit{honest} cross validation procedure for robust causal inference, see \href{https://grf-labs.github.io/grf/}{\underline{\smash{generalized random forests R package}}}.
 				}
 		\end{frame}
 
+		\begin{frame}{honest crossvalidation}
+		This recursive partioning uses multiple optimizations
+			\begin{itemize}
+				\item within sample (e.g. MSE, possibly with penalties) $\rightarrow$ danger of overfitting to sample
+				\item minimizing prediction error on unseen portions of the data to reduce out-of-sample bias $\rightarrow$ (n-fold) crossvalidation
+			\end{itemize}
+			\vspace*{.25cm}
+			\onslide<2>{
+				If we do this honestly
+				\begin{itemize}
+					\item	we can compute average treatment effects in the splits
+					\item it promises a valid CATE estimation
+					\item it allows to estimate heterogenous treatment effects
+				\end{itemize}
+			}
+		\end{frame}
+
+		\begin{frame}{heterogenous treatment effects}
+			\begin{center}
+				\includegraphics[scale=.55]{RegressionTreeCATE.jpg}
+				\captionof{figure}{Source: \cite{Johansson2019}}
+			\end{center}
+		\end{frame}
+
+		\begin{frame}{A similar - and earlier - approach}
+			Bayesian Additive Regression Trees (BART), e.g. \cite{Hill2011} \\ \vspace*{.25cm}
+				\begin{itemize}
+					\item estimate two models
+						\begin{itemize}
+							\item one on the treatment assignment process
+							\item a second on the treatment effect (aka response surface)
+						\end{itemize}
+					\item<2-> seems to perform weel in comparison to linear regression, propensity-score matching, etc. (\cite{Hill2011})
+					\onslide<3>{
+						\item "\textit{BART is not constrained by prior theories}" (ibid.)
+						\begin{itemize}
+							\item not sure this is unproblematic
+						\end{itemize}
+						}
+				\end{itemize}
+				\vspace*{.25cm}
+				\onslide<2>{For a suite of latest and different approaches read up on \cite{Carvalho2019}}
+		\end{frame}
+
 	\subsection{estimation}
+
+		\begin{frame}{machine learning estimation}
+			\begin{center}
+				\includegraphics[scale=.175]{MachineLearningOptimization.jpg}
+				\captionof{figure}{\href{https://towardsdatascience.com/on-optimization-of-deep-neural-networks-21de9e83e1}{\underline{\smash{Parmeet Bhatia 2020}}}}
+			\end{center}
+		\end{frame}
+
+		% https://towardsdatascience.com/an-introduction-to-surrogate-optimization-intuition-illustration-case-study-and-the-code-5d9364aed51b
 
 		\begin{frame}{estimation techniques}
 			Instead of ordinary least squares \\
@@ -175,7 +228,7 @@
 		\end{frame}
 
 	\subsection{matching}
-		\begin{frame}{causal trees}
+		\begin{frame}{matching or synthetic control}
 			Or, we can use machine learning methods for matching or synthetic control (\cite{Doudchenko2020}) \\ \vspace*{.1cm}
 			e.g to estimate weights $w$  and intercept $\mu$ for simulating counterfactual
 				\vspace*{.2cm}
@@ -272,7 +325,7 @@
 		\end{frame}
 
 		\begin{frame}{structural models}
-			"[G]raphical representations of structural causal models do not requirethe learner - whether artificial or human - to impose any distributional or functional-form restrictions on the underlying causal mechanisms under study. \\ \vspace*{.1cm}
+			"[G]raphical representations of structural causal models do not require the learner - whether artificial or human - to \textit{impose any distributional or functional-form restrictions} on the underlying causal mechanisms under study. \\ \vspace*{.1cm}
 
 			The approach remains fully nonparametric, a characteristic it shares with the potential outcomes framework.  At the same time,  however,  crucial identification assumptions,  suchas ignorability, are derived from the properties of the underlying structural model, rather than being assumed to hold a priori.  \\ \vspace*{.1cm}
 
@@ -298,14 +351,22 @@
 % ------------------------------------------------------------------------------
 \section{Conclusion}
 
+
 	\begin{frame}{Wrapping it all up}
-		To estimate a causal effect, we aim to compare the outcome to its counterfactual.
+		\begin{center}
+			\includegraphics[scale=3]{WrapItUp.jpg}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}{Wrapping it all up}
+		To estimate a causal effect, we can compare the outcome to its counterfactual.
 		\begin{itemize}
-			\item<1-> potential outcomes: $ \tau_{ATE}  =  E \{\textcolor{red}{Y}_i(\textcolor{blue}{1})\} - E \{\textcolor{red}{Y}_i(\textcolor{blue}{0})\} $
+			\item<1-> potential outcomes: $ \tau  =  E \{\textcolor{red}{Y}_i(\textcolor{blue}{1})\} - E \{\textcolor{red}{Y}_i(\textcolor{blue}{0})\} $
 			\begin{itemize}
 				\item<2-> RCTs
 				\item<2-> DID \& 2WFE
 				\item<2-> IV \& synthetic controls
+				\item<2-> causal trees
 				\item<2->	SCM
 			\end{itemize}
 			\item<3-> with frequentist, Bayesian, or machine learning methods
