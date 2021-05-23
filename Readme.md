@@ -35,3 +35,13 @@ Re-examination is offered after the conclusion of the course. If necessary, a se
 
 ## 4. Grades
 The grades awarded are Pass or Fail. To be awarded a Pass the student must fulfill the learning outcomes specified and demonstrate an independent, reflective, and critical approach to the research field and to the methods presented in the course. Replicable data and code must be provided (except for cases with confidentiality issues where toy data can be accepted).
+
+## 5. Lecture videos
+
+I am hosting the lectures as unlisted on youtube:
+
+- [Lecture 1: Intro and randomized controlled trials](https://youtu.be/m6PHnfe5s5M)
+- [Lecture 2: Difference-in-differences and causal panel data models](https://youtu.be/FjKZMSWLzR8)
+- [Lecture 3: Matching methods and synthetic controls](https://youtu.be/Zhl1YEYkOcQ)
+- [Lecture 4: Instrumental variables and regression discontinuities](https://youtu.be/-izu5ehZv9U)
+- [Lecture 5: Machine learning, Bayes, and structural models](https://youtu.be/s-51PkMuZkg)
