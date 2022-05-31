@@ -27,7 +27,7 @@
 *.xlsx
 *.zip
 seminars/02 - did/MarcusSantAnna2021/compliancedata/npdes_downloads/*
-seminars/02 - did/MarcusSantAnna2021/otherdata/* 
+seminars/02 - did/MarcusSantAnna2021/otherdata/*
 seminars/04 - iv-n-rdd/Kim2017/dataverse_files/Roll Call Votes on Environmental Issues.dta
 seminars/04 - iv-n-rdd/WuepperEtAl2020/Main.dta
 
@@ -40,10 +40,15 @@ Nakov_2010_Jackknife Instrumental Variables Estimation - Replication and extensi
 AngristImbens_1991_Sources of Identifying Information in Evaluation Models.pdf
 DAgostinoRubin_2000_ Estimating and Using Propensity Scores With Partially Missing Data.pdf
 
-grayscale_lulogo-en.pdf 
+Schedule.doc
+Schedule.pdf
+SAGM002 CausalInference_PhDCourse.pdf
+
+SAGM002_2021_Lecture_01_Intro.pdf
+
+grayscale_lulogo-en.pdf
 lulogo-en.pdf
 lulogo-sv.pdf
-small-lu-logo.pdf 
+small-lu-logo.pdf
 
 .Rproj.user
-
