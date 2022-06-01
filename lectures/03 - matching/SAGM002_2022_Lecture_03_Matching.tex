@@ -26,10 +26,10 @@
 \subtitle{}
 \date{dd mm yyyy}
 \institute{Lund University\\Department for Political Science}
-\newcommand{\conference}{2021 ClimBEco course}
+\newcommand{\conference}{2022 ClimBEco course}
 
 % bibliography
-\addbibresource{E:/Dropbox/Dokumente/references/library.bib}
+\addbibresource{C:/Users/NILSDR~1/Dropbox/Dokumente/references/library.bib}
 
 \begin{document}
 
@@ -406,18 +406,18 @@
 
 	\subsection{current development}
 		\begin{frame}{current development}
-			Arkhangelsky et al. \citeyear{Arkhangelsky2019} suggest a synthetic diff-in-diff approach, where \\ \vspace*{.15cm}
+			Arkhangelsky et al. \citeyear{Arkhangelsky2019} suggest a synthetic diff-in-diff approach, where $W$ denotes binary treatment, and\\ \vspace*{.15cm}
 			SynthControl:
 			\begin{equation}
-				(\hat{\mu}, \hat{\beta}, \hat{\tau}^{sc}) = \arg\min_{\mu, \beta, \tau}  \sum_{1=1}^{N} \sum_{1=1}{T} \left(Y_{it} - \mu - \beta_t - W_{it}\tau \right)^2 \hat{w}_i^{SC}
+				(\hat{\mu}, \hat{\beta}, \hat{\tau}^{sc}) = \arg\min_{\mu, \beta, \tau}  \sum_{i=1}^{N} \sum_{i=1}^{T} \left(Y_{it} - \mu - \beta_t - W_{it}\tau \right)^2 \hat{w}_i^{SC}
 			\end{equation}
 			DiD:
 			\begin{equation}
-				(\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\tau}^{did}) = \arg\min_{\mu, \alpha, \beta, \tau}  \sum_{1=1}^{N} \sum_{1=1}{T} \left(Y_{it} - \mu - \alpha_i -\beta_t - W_{it}\tau \right)^2
+				(\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\tau}^{did}) = \arg\min_{\mu, \alpha, \beta, \tau}  \sum_{i=1}^{N} \sum_{i=1}^{T} \left(Y_{it} - \mu - \alpha_i -\beta_t - W_{it}\tau \right)^2
 			\end{equation}
 			SynthDiD:
 			\begin{equation}
-				(\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\tau}^{sdid}) = \arg\min_{\mu, \beta, \tau}  \sum_{1=1}^{N} \sum_{1=1}{T} \left(Y_{it} - \mu - \alpha_i -\beta_t - W_{it}\tau \right)^2 \hat{w}_i \hat{\lambda}_t
+				(\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\tau}^{sdid}) = \arg\min_{\mu, \beta, \tau}  \sum_{i=1}^{N} \sum_{i=1}^{T} \left(Y_{it} - \mu - \alpha_i -\beta_t - W_{it}\tau \right)^2 \hat{w}_i \hat{\lambda}_t
 			\end{equation}
 		\end{frame}
 
