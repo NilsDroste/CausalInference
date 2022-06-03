@@ -1,0 +1,503 @@
+---
+title: "DAGs and priors"
+subtitle: "Putting science before statistics"
+date: "2022-06-03"
+institute: "CEC, Lund University"
+author: "Dmytro Perepolkin"
+format: 
+  revealjs:
+    logo: fig/unilund.png
+    theme: simple
+    bibliography: bayesian-causal-inference.bib
+    citations-hover: true
+bibliography: bayesian-causal-inference.bib
+---
+
+# Introduction
+
+## State your assumptions
+
+-   Causal inference: subjective, but scientific
+
+-   Revisit causal inference with emphasis on:
+
+    -   DAGs
+    -   Bayesian models
+
+Libraries to be used today
+
+```{r, echo=TRUE}
+library(tidyverse)
+library(ggdag)
+library(brms)
+library(ggdist) # for visualizing output from brms models 
+# remotes::install_github("rmcelreath/rethinking")
+library(rethinking)
+library(hrbrthemes) # the plotting theme I use
+```
+
+## Publishing dilemma
+
+```{r setup}
+ggplot2::theme_set(hrbrthemes::theme_ipsum_rc(grid_col = "grey90"))
+```
+
+Why do most popular articles seem to be least trustworthy?
+
+```{r, echo=TRUE}
+library(tidyverse)
+
+set.seed(42)
+n <- 250 # number of papers
+p <- 0.1 # proportion to be selected
+
+d <- tibble(newsworth=rnorm(n, 0, 1),
+            trustworth=rnorm(n, 0, 1)) %>% 
+  mutate(score=newsworth + trustworth) %>% 
+  mutate(selected=score>quantile(score,1-p))
+head(d,5)
+```
+
+## Selection-distortion effect visualized
+
+```{r, echo=TRUE}
+d %>% ggplot(aes(x=newsworth, y=trustworth, color=selected)) +
+  geom_point()+
+  geom_smooth(data=. %>% filter(selected), method="lm", se=F)
+```
+
+How is this possible?
+
+# Good and bad controls
+
+## Elemental paths
+
+::: columns
+::: {.column width="60%"}
+Pipe (mediator)
+
+Fork (common cause)
+
+Collider (common effect)
+:::
+
+::: {.column width="40%"}
+**X** $\rightarrow$ Z $\rightarrow$ Y
+
+**X** $\leftarrow$ Z $\rightarrow$ Y
+
+**X** $\rightarrow$ Z $\leftarrow$ Y
+:::
+:::
+
+-   Pipe and Fork look the same in the data, even though the causal mechanism is different
+-   Collider acts opposite to fork and pipe with regards to confounding pattern
+
+::: aside
+Theory [@cinelli2020] and examples [@mcelreath2020]
+:::
+
+## Pipe **X** $\rightarrow$ Z $\rightarrow$ Y
+
+-   ignoring Z, X and Y are associated
+-   stratifed by Z, X and Y are NOT associated
+
+```{r, echo=FALSE}
+N <- 3e3
+d <- tibble(X=rnorm(N),
+            Z=rbern(N, inv_logit(X)),
+            Y=rnorm(N, 2*Z-1))
+ggplot(d, aes(X,Y))+
+  geom_point(aes(color=as.factor(Z)), alpha=0.3)+
+  geom_smooth(aes(color=as.factor(Z)),method = "lm")+
+  geom_smooth(method = "lm")+
+  theme(legend.position = "none")
+```
+
+Z closes
+
+## Fork **X** $\leftarrow$ Z $\rightarrow$ Y
+
+-   ignoring Z, X and Y are associated
+-   stratifed by Z, X and Y are NOT associated
+
+```{r, echo=FALSE}
+N <- 3e3
+d <- tibble(Z=rbern(N),
+            X=rnorm(N, 2*Z-1),
+            Y=rnorm(N, 2*Z-1))
+ggplot(d, aes(X,Y))+
+  geom_point(aes(color=as.factor(Z)), alpha=0.3)+
+  geom_smooth(aes(color=as.factor(Z)),method = "lm")+
+  geom_smooth(method = "lm")+
+  theme(legend.position = "none")
+```
+
+Z closes
+
+## Collider **X** $\rightarrow$ Z $\leftarrow$ Y
+
+-   ignoring Z, X and Y are NOT associated
+-   stratifed by Z, X and Y are associated
+
+```{r, echo=FALSE}
+N <- 3e3
+d <- tibble(X=rnorm(N),
+            Y=rnorm(N),
+            Z=rbern(N, inv_logit(2*X+2*Y-2)))
+ggplot(d, aes(X,Y))+
+  geom_point(aes(color=as.factor(Z)), alpha=0.3)+
+  geom_smooth(aes(color=as.factor(Z)),method = "lm")+
+  geom_smooth(method = "lm")+
+  theme(legend.position = "none")
+```
+
+Z opens
+
+## Understanding colliders
+
+**X** $\rightarrow$ Z $\leftarrow$ Y
+
+-   Mutual information: learning about X tells me something about what Y might have been (given the value of Z).
+
+-   Location $\rightarrow$ $\$$ $\leftarrow$ Food. Conditioning on $\$$, invokes *negative association* between location and food quality
+
+-   Newsworthy $\rightarrow$ Published $\leftarrow$ Trustworthy. Conditioning on *Published*, invokes *negative association* between Hype and Quality.
+
+## Backdoor criterion
+
+::: columns
+::: {.column width="60%"}
+-   Identify all paths connecting X and Y
+
+-   The paths with arrows entering X are possible *backdoor* paths which contaminate causal inference
+
+-   For every backdoor path, find a way to close it by (possibly) conditioning on the relevant variable
+:::
+
+::: {.column width="40%"}
+```{r, fig.width=5, fig.height=4}
+g1 <- dagitty::dagitty('
+  dag{
+  X [pos="0,1"]
+  Y [pos="2,1"]
+  Z [pos="1,2"]
+  C [pos="1,0"]
+  X -> Y
+  X -> Z -> Y
+  X -> C <- Y
+  }')
+ggplot(g1, aes(x,y, xend=xend, yend=yend))+
+  geom_dag_point()+
+  geom_dag_text(color = "white") +
+  geom_dag_edges()+
+  theme_void()
+g1
+```
+:::
+:::
+
+## Backdoor criterion
+
+List all the paths connecting X and Y. Which need to be closed to estimate the effect of X on Y?
+
+```{r, fig.width=5, fig.height=4}
+g1 <- dagitty::dagitty('
+  dag{
+  A [pos="0,2"]
+  B [pos="2,2"]
+  X [pos="0,1"]
+  Y [pos="2,1"]
+  Z [pos="1,2"]
+  C [pos="1,0"]
+  X -> Y
+  X <- Z -> Y
+  X -> C <- Y
+  X <-A ->Z
+  Z <-B ->Y
+  }')
+ggplot(g1, aes(x,y, xend=xend, yend=yend))+
+  geom_dag_point(size=10)+
+  geom_dag_text(color = "white", size=5) +
+  geom_dag_edges()+
+  theme_void()
+```
+
+## False Sorrow Collider
+
+Happiness (H) and age (A) both cause marriage (M). Even though there is no causal association between happiness and age, if we condition on marriage, then it will induce a statistical association between age and happiness.
+
+::: columns
+::: {.column width="60%"}
+
+- Data simulated by [@mcelreath2020]
+
+```{r}
+d <-  rethinking::sim_happiness(seed=42, N_years = 1000) %>% 
+  mutate(ms=factor(married, labels=c("single", "married")),
+         age1865=((age-18)/(65-18)))
+head(d)
+```
+:::
+
+::: {.column width="40%"}
+```{r, fig.width=8, fig.height=4}
+d %>% ggplot(aes(x=age,y=happiness, color=married))+geom_point()
+```
+:::
+:::
+
+## Model of happiness
+
+$$\text{happiness}_i \sim Normal(\mu_i, \sigma)\\
+\mu_i=\alpha_{\text{married}[i]}+\beta_1\text{age}_i$$
+
+Here $\text{married}[i]$ is the marital status of individual $i$.
+
+::: {.panel-tabset}
+### Code
+```{r, echo=TRUE}
+b_marriage_1 <- brm(data=d, family=gaussian,
+             happiness~0+ms+age1865,
+             prior=c(prior(normal(0,1),class=b, coef=mssingle),
+                     prior(normal(0,1),class=b, coef=msmarried),
+                     prior(normal(0,2),class=b, coef=age1865),
+                     prior(exponential(1),class=sigma)),
+            iter=2000, warmup = 1000, chains=4, cores=4, seed=42,
+            file="fits/b.marriage.1")
+```
+### Output
+```{r}
+b_marriage_1
+```
+:::
+
+## Model of happiness
+
+Lets drop the marriage status `ms`
+
+
+::: {.panel-tabset}
+### Code
+```{r, echo=TRUE}
+b_marriage_2 <- brm(data=d, family=gaussian,
+             happiness~ 0 + Intercept + age1865,
+             prior=c(prior(normal(0,1),class=b, coef=Intercept),
+                     prior(normal(0,2),class=b, coef=age1865),
+                     prior(exponential(1),class=sigma)),
+            iter=2000, warmup = 1000, chains=4, cores=4, seed=42,
+            file="fits/b.marriage.2")
+```
+### Output
+```{r}
+b_marriage_2
+```
+:::
+
+>If you don’t have a causal model, you can’t make inferences from a multiple regression. And the regression itself does not provide the evidence you need to justify a causal model. Instead, you need some science.
+
+## Haunted DAG
+
+Unmeasured causes can still induce collider bias.
+
+Let's say we want to measure the direct influence of parents (P) and grandparents (G) on academic achievement of children (C)
+
+::::columns
+:::{.column width="50%"}
+```{r, fig.width=4, fig.height=2}
+dag_coords <- tibble(name = c("G", "P", "C"),
+         x = c(1, 2, 2),
+         y = c(2, 2, 1))
+ggdag::dagify(C~G+P, P~G, coords = dag_coords) %>% 
+  ggplot(aes(x=x, y=y, xend=xend, yend=yend)) + geom_dag_edges()+
+  geom_dag_point(size=10)+
+  geom_dag_text(color="white", size=5)+theme_void()
+```
+
+:::
+:::{.column width="50%"}
+```{r, fig.width=4, fig.height=2}
+dag_coords <- tibble(name = c("G", "P", "C", "U"),
+         x = c(1, 2, 2, 2.5),
+         y = c(2, 2, 1, 1.5))
+ggdag::dagify(C~G+P+U, P~G+U, coords = dag_coords) %>% 
+  ggplot(aes(x=x, y=y, xend=xend, yend=yend)) + geom_dag_edges()+
+  geom_point(x=2.5, y=1.5, size=15, color="red")+
+  geom_dag_point(size=10)+
+  geom_dag_text(color="white", size=5)+theme_void()
+```
+:::
+::::
+
+:::aside
+Suppose, there are unmeasured, common influences (U) on parents and their children (e.g. neighbourhood), not shared by grandparents.
+:::
+
+## Simulation
+
+Let's simulate
+
+```{r, echo=TRUE}
+n <- 250
+b_gp <- 1 # direct effect of G on P
+b_gc <- 0 # direct effect of G on C
+b_pc <- 1 # direct effect of P on C
+b_u <- 2 # direct effect of U on P and C
+
+d <- tibble(U=2*rbinom(n,size=1,prob = 0.5)-1,
+            G=rnorm(n),
+            P=rnorm(n, b_gp*G+b_u*U),
+            C=rnorm(n, b_pc*P+ b_gc*G+ b_u*U))
+head(d)
+```
+
+## Models
+
+::: {.panel-tabset}
+### Without U
+```{r, echo=TRUE}
+b_haun_wo_u <- brm(data=d, family = gaussian,
+                   C~0+Intercept+P+G,
+                   prior=c(prior(normal(0,1), class=b),
+                           prior(exponential(1), class=sigma)),
+                   iter=2000, warmup=1000, chains=4, cores=4, seed=42,
+                   file="fits/b.haun.wou")
+```
+
+### Output
+```{r}
+b_haun_wo_u
+```
+
+### Chart
+
+```{r}
+d %>% mutate(cent4560=P>=quantile(P,prob=0.45) & 
+                      P<=quantile(P,prob=0.60),
+             U=factor(U)) %>% 
+ggplot(aes(x=G, y=C))+
+  geom_point(aes(shape=cent4560, color=U), size=2.5)+
+  geom_smooth(data=. %>% filter(cent4560), method = "lm", se=F)
+```
+
+### With U
+
+```{r, echo=TRUE}
+b_haun_w_u <- brm(data=d, family = gaussian,
+                   C~0+Intercept+P+G+U,
+                   prior=c(prior(normal(0,1), class=b),
+                           prior(exponential(1), class=sigma)),
+                   iter=2000, warmup=1000, chains=4, cores=4, seed=42,
+                   file="fits/b.haun.wu")
+```
+
+### Output
+```{r}
+b_haun_w_u
+```
+
+:::
+
+The unmeasured U makes P a collider, and conditioning on P introduces a bias. What can be done? You need to measure U as well.
+
+# More practice
+
+## Backdoor waffles {.smaller}
+::::columns
+:::{.column width="50%"}
+```{r, fig.width=4, fig.height=4}
+dag_coords <- tibble(name = c("A", "D", "M", "S", "W"),
+         x    = c(1, 3, 2, 1, 3),
+         y    = c(1, 1, 2, 3, 3))
+
+dg1 <- dagify(A ~ S,
+       D ~ A + M + W,
+       M ~ A + S,
+       W ~ S,
+       coords = dag_coords) 
+dg1 %>% 
+  ggplot(aes(x=x, y=y, xend=xend, yend=yend)) + geom_dag_edges()+
+  geom_dag_point(size=10)+
+  geom_dag_text(color="white", size=5)+theme_void()
+```
+:::
+::: {.column width="50%"}
+Here, S means whether or not a State is in the southern US, A median age at marriage, M is marriage rate, W is number of Waffle Houses, and D is divorce rate. 
+
+There are three backdoor paths between W and D
+
+```{r, echo=TRUE}
+dagitty::adjustmentSets(dg1, "W", "D")
+dagitty::impliedConditionalIndependencies(dg1)
+```
+:::
+::::
+
+::: aside
+This graph assumes that southern States have lower ages of marriage (S→A), higher rates of marriage both directly (S→M) and mediated through age of marriage (S→A→M), as well as more waffles (S→W). Age of marriage and marriage rate both influence divorce.
+:::
+
+## Do waffles cause divorce?
+
+```{r}
+data(WaffleDivorce, package = "rethinking")
+d <- WaffleDivorce %>% 
+  mutate(A=rethinking::standardize(MedianAgeMarriage),
+         D=rethinking::standardize(Divorce),
+         M=rethinking::standardize(Marriage),
+         S=factor(South, labels = c("North", "South")),
+         W=rethinking::standardize(WaffleHouses)) %>% 
+  select(A,D,M,S, W)
+pairs(d)
+rm(WaffleDivorce)
+```
+
+## Models
+
+::: {.panel-tabset}
+
+### Formulae
+```{r, echo=TRUE}
+formulae <- c("D ~ 1 + W", 
+             "D ~ 1 + W + S", 
+             "D ~ 1 + W + A + M", 
+             "D ~ 1 + W + A", 
+             "D ~ 1 + W + M",
+             "D ~ 1 + W + A + S",
+             "D ~ 1 + W + M + S")
+```
+
+### Code
+```{r, echo=TRUE}
+brms_objs <- imap(formulae, 
+                  ~brm(data=d, family = gaussian,
+                  as.formula(.x),
+                  prior=c(prior(normal(0,0.2), class=Intercept),
+                          prior(normal(0,0.5), class=b),
+                          prior(exponential(1), class=sigma)),
+                  iter=2000, warmup=1000, chains=4, cores=4, seed=42,
+                  file=str_c("fits/pasteb_waffles",.y)))
+```
+
+### Extract
+```{r bobj_plot, echo=TRUE, eval=FALSE}
+tibble(formula=formulae,
+       bobj=brms_objs,
+       n=seq_along(formulae)) %>% 
+  mutate(smpls=purrr::map(bobj, ~as_draws_df(.x) %>% select(b_W))) %>% 
+  select(-bobj) %>% unnest(smpls) %>% 
+  ggplot(aes(x=b_W, y=fct_inorder(formula), color=n %in%c(2:3)))+
+  ggdist::stat_pointinterval()+
+  theme(legend.position = "none")
+```
+
+### Visualize
+
+```{r, echo=FALSE, ref.label="bobj_plot"}
+
+```
+
+We are interested in partial causal effect of `b_W`
+:::
+
+## References
