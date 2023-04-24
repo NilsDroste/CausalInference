@@ -26,6 +26,7 @@
 *.vrb
 *.xlsx
 *.zip
+*.bib
 seminars/02 - did/MarcusSantAnna2021/compliancedata/npdes_downloads/*
 seminars/02 - did/MarcusSantAnna2021/otherdata/*
 seminars/04 - iv-n-rdd/Kim2017/dataverse_files/Roll Call Votes on Environmental Issues.dta
