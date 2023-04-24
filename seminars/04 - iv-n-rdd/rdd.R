@@ -7,9 +7,9 @@ set.seed(123)
 
 x<-runif(1000,-1,1)
 y<-5+3*x+2*(x>=0)+rnorm(1000)
-rdrobust(y,x)
+rdrobust(y,x, kernel = "uniform")
 
-rdplot(y,x)
+rdplot(y,x, kernel = "uniform")
 
 
 library(rdd)

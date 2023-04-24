@@ -1,0 +1,235 @@
+\ProvidesPackage{beamerthemeLU-spfaff}[2015/01/14]
+\RequirePackage{tikz,pgf}
+\RequirePackage[overload]{textcase}
+\RequirePackage{setspace}
+% \usepackage[urw-garamond]{mathdesign}
+\usepackage[scaled]{helvet}
+\usepackage{animate}
+\usepackage[backend=bibtex, style=authoryear, maxcitenames=3]{biblatex}
+\setbeamertemplate{bibliography item}{}
+\AtBeginBibliography{\scriptsize}
+
+\usetikzlibrary{shapes,arrows,calc}
+
+\graphicspath{ {./figures/} }
+\usepackage{caption}
+\captionsetup{font=scriptsize,labelfont=scriptsize,labelformat=empty}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=black,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+
+\usepackage{animate}
+
+\definecolor{LUCopper}{RGB}{156,97,20} %Kopparn som tydligen ska användas till typ allt
+\definecolor{LUBlue}{RGB}{0,0,128} %Den ganska mörka blåa färgen som LU har, anänds inte så mycket längre
+\definecolor{LUPink}{RGB}{233,196,199} %denna är någon sorts officiell rosa som man kan ha som accentfärg
+\definecolor{LUGreen}{RGB}{173,202,184} %Fler officiella accentfärger
+\definecolor{LULBlue}{RGB}{185,211,220}
+\definecolor{LUIvory}{RGB}{214,210,196}
+
+\newcommand{\titlecolor}[1]{\renewcommand{\giventitlecolor}{#1}}
+\newcommand{\titleimage}[1]{\renewcommand{\giventitleimage}{#1}}
+\newcommand{\giventitlecolor}{}
+\newcommand{\giventitleimage}{}
+\newcommand*{\miniframeson}{\let\beamer@writeslidentry=\beamer@writeslidentry@miniframeson}
+\newcommand*{\miniframesoff}{\let\beamer@writeslidentry=\beamer@writeslidentry@miniframesoff}
+% \newcommand{\newblock}{}
+
+% Babel support
+\providecommand*{\lulogo}{figures/lulogo-en.pdf}
+\AtBeginDocument{
+  \@ifpackagewith{babel}{swedish}{%
+    \addto\captionsswedish{\renewcommand*\lulogo{figures/lulogo-sv.pdf}}%
+  }{}
+  \@ifpackagewith{babel}{english}{%
+    \addto\captionsenglish{\renewcommand*\lulogo{figures/lulogo-en.pdf}}%
+  }{}
+}
+
+\providecommand*{\textonlylulogo}{figures/small-lu-logo.pdf}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Outer theme
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\useoutertheme[width=.15\paperwidth]{sidebar}
+\setlength{\beamer@headheight}{.165\paperheight}
+\pgfdeclareimage[width=.1\paperwidth]{small-logo}{\lulogo}
+\pgfdeclareimage[width=.08\paperwidth]{only-logo}{\textonlylulogo}
+%\pgfdeclareimage[width=.5\paperwidth]{main-logo}{\lulogo}
+%\pgfdeclareimage[width=.33\paperwidth]{large-corner}{large-corner}
+%\pgfdeclareimage[height=\beamer@headheight]{small-corner}{small-corner}
+\setbeamertemplate{sidebar left}{%
+\vskip10pt
+\insertverticalnavigation{\beamer@sidebarwidth}%
+}
+
+\setbeamertemplate{footline}[text line]{\color{darkgray}\insertshorttitle\strut\hfill\conference\hfill\insertframenumber/\inserttotalframenumber}
+
+\addtobeamertemplate{frametitle}{}{%
+\begin{pgfpicture}
+\pgf@relevantforpicturesizefalse
+\pgftransformxshift{-\Gm@lmargin}
+\pgftransformyshift{\beamer@headheight+18pt}
+%\pgftext[at=\pgfpoint{\paperwidth}{-\beamer@headheight},right,base]{\pgfuseimage{small-corner}}
+\pgfpathmoveto{\pgfpoint{.15\paperwidth}{0pt}}
+\pgfpathlineto{\pgfpoint{.15\paperwidth}{-\beamer@headheight}}
+\pgfsetlinewidth{3.5pt}
+\pgfsetinnerlinewidth{1pt}
+\pgfsetinnerstrokecolor{LUCopper}
+\pgfsetcolor{white}
+\pgfusepath{stroke}
+\pgfpathmoveto{\pgfpoint{.15\paperwidth}{-.22\paperheight}}
+\pgfpathlineto{\pgfpoint{.15\paperwidth}{-.97\paperheight}}
+\pgfsetlinewidth{1pt}
+\pgfsetinnerlinewidth{0pt}
+\pgfsetcolor{LUCopper}
+\pgfusepath{stroke}
+\pgftext[at=\pgfpoint{.075\paperwidth}{-.97\paperheight},center,base]{\pgfuseimage{only-logo}}
+\end{pgfpicture}%
+\vskip-25pt%
+}
+
+
+
+\setbeamertemplate{title page}{
+
+\begin{tikzpicture}%[overlay]
+
+\ifx\giventitlecolor\@empty %check if there is a bg color set
+	\draw[fill=LUPink, line width=.3cm, draw=white, use as bounding box] (0,0)
+	rectangle (\paperwidth, 1\paperheight);
+\else
+	\draw[fill=\giventitlecolor, line width=.3cm, draw=white, use as bounding box] (0,0)
+	rectangle (\paperwidth, 1\paperheight);
+\fi
+
+\ifx\giventitleimage\@empty
+	%if no title image do nothing
+\else
+	\begin{scope}
+		% \clip (.15, .15) rectangle ($(\paperwidth,\paperheight) - (-0.005\paperwidth, .15)$);
+		\centering {\giventitleimage}
+	\end{scope}
+\fi
+
+\usebeamerfont{title} %set font to title font
+\renewcommand{\baselinestretch}{.9} %reduce line spacing
+
+%draw white title box
+\node[draw=white, shape=rectangle, minimum height=1.5cm, text width=10cm, align=left, fill=white, font=\large, inner ysep=.5cm]
+ at (.6\paperwidth, .7\paperheight) (titlenode) {\inserttitle};
+
+%draw more white boxes
+\draw[fill=white,draw=none]
+($(titlenode.south east)+(-.1cm,0)$) rectangle ($(titlenode.north east)+(\paperwidth,0)$);
+\draw[fill=white,draw=none]
+($(titlenode.south west)+(0,.1cm)$) rectangle ($(titlenode.south east)+(\paperwidth,-0.2cm)$);
+
+%draw the line to the edge of the page
+\begin{scope}
+\clip (.15, .15) rectangle ($(\paperwidth,1\paperheight) - (-0.005\paperwidth, .15)$);
+\draw[very thick, draw=gray] ($(titlenode.text)+(0,-.75cm)$) -- ($(titlenode.text)+(\paperwidth,-.75cm)$);
+\end{scope}
+
+%draw subtitle if there is one
+\ifx\insertsubtitle\@empty
+      %if there is no subtitle dont draw anything
+    \else
+    	 %draw subtitle and boxes
+     \draw[fill=white,draw=white]
+     ($(titlenode.south west)+(0,-0.1cm)$) rectangle ($(titlenode.south east)+(\paperwidth,-1.25cm)$);
+     \usebeamerfont{subtitle}
+     \node[align=left, anchor=text, draw=none,font=\scriptsize] at ($(titlenode.text)+(0,-1.25cm)$)
+     {\insertsubtitle};
+\fi
+
+%draw authors if there is any
+\ifx\insertauthor\@empty
+      %if there is no subtitle dont draw anything
+    \else
+    	 %draw subtitle and boxes
+     \draw[fill=white,draw=white]
+     ($(titlenode.south west)+(0,-0.1cm)$) rectangle ($(titlenode.south east)+(\paperwidth,-1.25cm)$);
+     \usebeamerfont{subtitle}
+     \node[align=left, anchor=text, draw=none,font=\scriptsize] at ($(titlenode.text)+(0,-1.25cm)$)
+     {\insertauthor};
+\fi
+
+%draw the line to the edge of the page
+\begin{scope}
+\clip (.15, .15) rectangle ($(\paperwidth,1\paperheight) - (-0.005\paperwidth, .15)$);
+\draw[very thick, draw=gray] ($(titlenode.text)+(0,-1.5cm)$) -- ($(titlenode.text)+(\paperwidth,-1.5cm)$);
+\end{scope}
+
+\node[align=left, anchor=text, draw=none,font=\scriptsize] at ($(titlenode.text)+(0,-2cm)$)
+{\conference{}};
+
+
+%draw logos
+\node at ($(\paperwidth,0)-(1.35cm,.25cm)$) {\includegraphics[scale=.6]{grayscale_lulogo-en.pdf}}; % could also be lulogo-en.pdf
+\node[anchor=north west] at ($(0,\paperheight)-(0cm,0cm)$) {\includegraphics[scale=.15]{\lulogo}};
+\end{tikzpicture}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Inner Theme
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\useinnertheme{rectangles}
+\setbeamertemplate{navigation symbols}{}
+
+\setlength{\leftmargini}{.5em}
+\setlength{\leftmarginii}{1.0em}
+\setlength{\leftmarginiii}{1.5em}
+\setlength{\leftmarginiv}{2.0em}
+\setlength{\leftmarginv}{2.5em}
+\setlength{\leftmarginvi}{3.0em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Colours
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usecolortheme[named=LUCopper]{structure}
+\usecolortheme{rose}
+\setbeamercolor{title page}{fg=darkgray}
+\setbeamercolor{logo}{bg=LUCopper}
+\setbeamercolor{frametitle}{fg=LUCopper,bg=white}
+\setbeamercolor{section in sidebar}{fg=LUCopper}
+\setbeamerfont{section in sidebar}{series=\bfseries}
+\setbeamercolor{block title}{bg=LUGreen,fg=LUCopper}
+\setbeamercolor{block body}{bg=LUGreen!50!white}
+\setbeamercolor{block title alert}{bg=LUPink,fg=LUCopper}
+\setbeamercolor{block body alert}{bg=LUPink!50!white}
+\setbeamercolor{block title example}{bg=LUPink,fg=LUCopper}
+\setbeamercolor{block body example}{bg=LUPink!50!white}
+\setbeamerfont{title}{family={\rmfamily}, series={\bfseries}}
+\setbeamerfont{subtitle}{family={\sffamily},series={\bfseries}}
+\setbeamerfont{frametitle}{family={\rmfamily},series={\bfseries}}
+\setbeamerfont{block title}{family={\rmfamily},series={\bfseries}}
+%\setbeamerfont{framesubtitle}{\uppercase}
+
+\newcommand{\titleframe}{
+\begingroup
+\makeatletter
+\setlength{\hoffset}{-\Gm@lmargin}
+\makeatother
+\begin{frame}[plain,shrink]
+    \titlepage
+\end{frame}
+\endgroup
+}
+
+\newcommand\ThankYouFrame{
+\begin{frame}[plain,t]
+\begin{pgfpicture}
+\pgf@relevantforpicturesizefalse
+\pgftransformxshift{-\Gm@lmargin}
+\pgftransformyshift{5.5pt}
+\DoPurpleBackground
+\end{pgfpicture}
+\end{frame}
+}

@@ -264,7 +264,7 @@ b_marriage_1 <- brm(data=d, family=gaussian,
                      prior(normal(0,2),class=b, coef=age1865),
                      prior(exponential(1),class=sigma)),
             iter=2000, warmup = 1000, chains=4, cores=4, seed=42,
-            file="fits/b.marriage.1")
+            file="fits/b.marriage.1", file_refit = "always")
 ```
 ### Output
 ```{r}
