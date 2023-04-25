@@ -26,7 +26,7 @@
 \subtitle{}
 \date{dd mm yyyy}
 \institute{Lund University\\Department for Political Science}
-\newcommand{\conference}{2022 ClimBEco course}
+\newcommand{\conference}{2023 ClimBEco course}
 
 % bibliography
 \addbibresource{C:/Users/NILSDR~1/Dropbox/Dokumente/references/library.bib}
@@ -65,6 +65,45 @@
 
 % ------------------------------------------------------------------------------
 \section{Introduction}
+
+
+	\begin{frame}{Standing on the shoulders of giants}
+		\begin{centering}
+			\includegraphics[scale=.33]{nobel-economics.jpg}
+			\captionof{figure}{\textcolor{gray}{Card, Angrist \& Imbens won the 2021 Nobel Prize in Economics for causal analysis. \\
+			See: \href{https://www.nobelprize.org/prizes/economic-sciences/2021/summary/}{\underline{\smash{Sverige Riksbank}}}}}
+		\end{centering}
+	\end{frame}
+
+	\begin{frame}{Design vs. model-based causal inference}
+		\begin{itemize}
+			\item \textit{\textbf{design-based}}: properties of the estimators arises from random treatment assignment
+			\item \textit{\textbf{model-based}}: properties arise from the random sampling of units from a large population (in combination with assumptions on this population distribution.)
+		\end{itemize}
+		\vspace*{.5cm} From \cite{Athey2022}
+	\end{frame}
+
+	\begin{frame}{Design vs. model-based causal inference - 2}
+		\begin{itemize}
+			\item there is different takes on which approach allows causal estimates cf. (\cite{Card2022, Heckman2008})
+			\item finite populations without random sampling are tricky, especially when there is no random treatment (\cite{Sterba2009, Abadie2020})
+			\item here, structural causal models can help to explicitely formulate the data generating process (but not just in such cases) (\cite{Cinelli2022})
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Three tasks in the quantitive analysis of causes}
+		\begin{centering}
+			\begin{tabular}{cp{6.5cm}p{3cm}}
+				Task & Description & Requirements \\
+				\hline \hline \\
+					1 & Defining the set of hypotheticals or counterfactuals & A scientific \textbf{theory} \\\\
+					2 & Identifying causal parameters from hypothetical population data & Mathematical analysis of point or set  \textbf{identification} \\\\
+					3 & Identifying parameters from real data &  \textbf{estimation} and testing theory \\
+			\end{tabular}
+		\end{centering}
+		\\\vspace*{.5cm} From \cite{Heckman2008}
+	\end{frame}
+
 	\begin{frame}{Causal Inference from observational data}
 		\textbf{\textit{Synopsis}}: Today, we will be looking into \textit{the} classical research design for inferring causal effects from observational data (i.e. when experiments are unethical or infeasible), and its recent developments \\ \vspace*{.25cm}
 		\onslide<2->{In particular, we will develop an understanding of\\ \vspace*{.25cm}}
@@ -80,7 +119,8 @@
 
 	\begin{frame}{Definition}
 		\textbf{Quasi- / natural experiment:} \\ \vspace*{.25cm}
-		A setting where a subpopulation is treated with an intervention of sorts that occurs due to non-random assignment processes (outside of the researchers influence if its called \textit{natural}).
+		A setting where a subpopulation is treated with an intervention of sorts that occurs due to non-random assignment processes (outside of the researchers influence if its called \textit{natural}). \\ \\
+		\onslide<2>{\textbf{However:} "First, it is worth noting that the label “natural experiment” is perhaps unfortunate. As we shall see, the social and political forces that give rise to as-if random assignment of interventions are not generally “natural” in any ordinary sense of that term. 15 Second, natural experiments are observational studies, not true experiments, again, because they lack an experimental manipulation. In sum, natural experiments are neither natural nor experiments. (\cite{Dunning2012})}
 	\end{frame}
 
 % ------------------------------------------------------------------------------
@@ -383,7 +423,7 @@
 			We may run into time series length related weighting problems
 			\begin{center}
 				\includegraphics[width=.7\textwidth]{StaggeredTreatment.png}
-				\\ \tiny{DiD with variations in treatment timing. Image source: \cite{Goodman-Bacon2018}, as reproduced by \href{https://andrewcbaker.netlify.app/2019/09/25/difference-in-differences-methodology/}{\underline{\smash{A.C. Baker}}}}
+				\\ \tiny{DiD with variations in treatment timing. Image source: \cite{Goodman-Bacon2021}, as reproduced by \href{https://andrewcbaker.netlify.app/2019/09/25/difference-in-differences-methodology/}{\underline{\smash{A.C. Baker}}}}
 			\end{center}
 		\end{frame}
 
@@ -404,7 +444,7 @@
 			Picture a case with multiple periods, three groups, and thus four comparisons
 			\begin{center}
 				\includegraphics[width=.7\textwidth]{StaggeredTreatment2.png}
-				\\ \tiny{DiD with variations in treatment timing. Image source: \cite{Goodman-Bacon2018}, as reproduced by \href{https://andrewcbaker.netlify.app/2019/09/25/difference-in-differences-methodology/}{\underline{\smash{A.C. Baker}}}}
+				\\ \tiny{DiD with variations in treatment timing. Image source: \cite{Goodman-Bacon2021}, as reproduced by \href{https://andrewcbaker.netlify.app/2019/09/25/difference-in-differences-methodology/}{\underline{\smash{A.C. Baker}}}}
 			\end{center}
 		\end{frame}
 
@@ -412,16 +452,15 @@
 			Turns out: 2WFE DiD estimator is a weighted average of these comparisons
 			\begin{center}
 				\includegraphics[width=.575\textwidth]{GB_staggeredDiff.jpg}
-				\\ \tiny{Bacon decomposition theorem. Image source: \cite{Goodman-Bacon2018}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
+				\\ \tiny{Bacon decomposition theorem. Image source: \cite{Goodman-Bacon2021}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
 			\end{center}
 		\end{frame}
 
 			\begin{frame}{notation}
-				Even worse, a positive but staggered slope change, can even change the sign of the DD estimate
-				\begin{center}
-					\includegraphics[width=.6\textwidth]{GB_staggeredDiff2.jpg}
-					\\ \tiny{Staggered treatment with linear slope change. Image source: \cite{Goodman-Bacon2018}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
-				\end{center}
+				Even worse, a positive but staggered slope change, can even change the sign of the DD estimate. \\
+				\centering 
+					\animategraphics[width=.7\textwidth,controls]{10}{GoodmanBacon-}{0}{531}
+					\newline \tiny{Staggered treatment with linear slope change. Image source: \cite{Goodman-Bacon2021}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
 			\end{frame}
 
 	\subsection{solutions}
@@ -434,7 +473,7 @@
 						\item under random adoption dates, a weighted DID is unbiased
 						\item comparing treated with not-yet treated
 					\end{itemize}
-				\item<3-> \cite{Goodman-Bacon2018}
+				\item<3-> \cite{Goodman-Bacon2021}
 					\begin{itemize}
 						\item a time-in-treatment weighted DiD, fixing the weights to gain balance
 						\item R package \href{https://cran.r-project.org/web/packages/bacondecomp/index.html}{\underline{\smash{bacondecomp}}}
@@ -464,15 +503,15 @@
 			\\ \vspace*{.25cm}
 			\begin{itemize}
 				\item \cite{DeChaisemartin2018}
-				\begin{itemize}
-					\item allowing for treatment effects "heterogeneous across groups and over time periods"
-					\item R package \href{https://cran.r-project.org/web/packages/DIDmultiplegt/index.html}{\underline{\smash{DIDmultiplegt}}}
-				\end{itemize}
+					\begin{itemize}
+						\item allowing for treatment effects "heterogeneous across groups and over time periods"
+						\item R package \href{https://cran.r-project.org/web/packages/DIDmultiplegt/index.html}{\underline{\smash{DIDmultiplegt}}}
+					\end{itemize}
 				\item \cite{Imai2020}
-				\begin{itemize}
-					\item identify some problematic negative weigthing in 2WFE
-					\item they propose weighting or matching \href{https://imai.fas.harvard.edu/research/twoway.html}{\underline{\smash{Imai 2020}}}
-				\end{itemize}
+					\begin{itemize}
+						\item identify some problematic negative weigthing in 2WFE
+						\item they propose weighting or matching \href{https://imai.fas.harvard.edu/research/twoway.html}{\underline{\smash{Imai 2020}}}
+					\end{itemize}
 			\end{itemize}
 		\end{frame}
 
@@ -484,6 +523,11 @@
 					\begin{itemize}
 						\item test for parallel-trends, R package \href{https://github.com/jonathandroth/pretrends}{\underline{\smash{pretends}}}
 						\item robust inference strategy under non-parralel trends \cite{Rambachan2020}, R package \href{https://github.com/asheshrambachan/HonestDiD}{\underline{\smash{HonestDiD}}}
+					\end{itemize}
+				\item \cite{Wooldridge2021}
+					\begin{itemize}
+						\item Two-Way Mundlak Regression (cohort-weighted TWFE)
+						\item standard strategies for heterogeneous trends available and faciliate nonlinear models
 					\end{itemize}
 			\end{itemize}
 		\end{frame}
