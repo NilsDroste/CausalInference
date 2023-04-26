@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169]{beamer}
+ \documentclass[aspectratio=169]{beamer}
 %\documentclass{beamer}
 %%%CHOOSE ASPECT RATIO ABOVE%%%
 
@@ -8,7 +8,7 @@
 \usepackage{csquotes}
 \usepackage[british]{babel}
 \usepackage{graphicx}
-% \usepackage{booktabs}
+\usepackage[backend=bibtex, style=authoryear, maxcitenames=3]{biblatex}
 \usepackage{makecell}
 \usepackage{textcomp}
 \usepackage{listings}
@@ -26,7 +26,7 @@
 \subtitle{}
 \date{dd mm yyyy}
 \institute{Lund University\\Department for Political Science}
-\newcommand{\conference}{2022 ClimBEco course}
+\newcommand{\conference}{2023 ClimBEco course}
 
 % bibliography
 \addbibresource{C:/Users/NILSDR~1/Dropbox/Dokumente/references/library.bib}
@@ -399,14 +399,14 @@
 				\| Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \|_2^2 = \left( Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \right)^T \left( Y_{t,pre}^{obs} - \mu - w^T Y_{c,pre}^{obs} \right)
 			\end{equation}
 			\\ \vspace*{.25cm}
-			This mathing is often performed on lagged outcomes $Y_{t-(1,...,T)}$ and other covariates. \onslide<2->{So, in simpler terms, $	\| X_{treat} - X_{control} W \|$  which resembles a balancing approach (á la matching).}
+			This matching is often performed on lagged outcomes $Y_{t-(1,...,T)}$ and other covariates. \onslide<2->{So, in simpler terms, $	\| X_{treat} - X_{control} W \|$  which resembles a balancing approach (á la matching).}
 			\\ \vspace*{.25cm}
 			\onslide<2> See Doudchenko and Imbens (\citeyear{Doudchenko2020}) for a balanced, cross-validated, elastic net type penalty approach, combining Lasso and ridge regressions to regularize $w$.
 		\end{frame}
 
 	\subsection{current development}
 		\begin{frame}{current development}
-			Arkhangelsky et al. \citeyear{Arkhangelsky2019} suggest a synthetic diff-in-diff approach, where $W$ denotes binary treatment, and\\ \vspace*{.15cm}
+			Arkhangelsky et al. \citeyear{Arkhangelsky2021} suggest a synthetic diff-in-diff approach, where $W$ denotes binary treatment, and\\ \vspace*{.15cm}
 			SynthControl:
 			\begin{equation}
 				(\hat{\mu}, \hat{\beta}, \hat{\tau}^{sc}) = \arg\min_{\mu, \beta, \tau}  \sum_{i=1}^{N} \sum_{i=1}^{T} \left(Y_{it} - \mu - \beta_t - W_{it}\tau \right)^2 \hat{w}_i^{SC}
@@ -426,7 +426,7 @@
 			\begin{itemize}
 				\item compare a single treated unit group with an untreated quasi-counterfactual
 				\item you can compute placebo tests for the effect on an untreated unit
-				\item so far, has not been \text{widely} applied (for examples see \cite{Abadie2020})
+				\item so far, has not been \text{widely} applied (for examples see \cite{Abadie2020b})
 				\item I think it is so far underestimated (i.e. by applied researchers)
 			\end{itemize}
 		\end{frame}

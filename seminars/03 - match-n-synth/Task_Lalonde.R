@@ -12,7 +12,9 @@ library(MatchIt)
 library(cobalt)
 library(party)
 library(twang)
-library(Zelig)
+library(Zelig) 
+# install.packages("devtools")
+# devtools::install_github('IQSS/Zelig')
 # library(WeightIt)
 
 # load data
