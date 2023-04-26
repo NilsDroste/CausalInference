@@ -36,5 +36,5 @@ summary(mod5, vcov=vcovHC(mod5,method = "arellano"))
 
 mod3 <- lm( formula = lnsmoke ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + areaunkn + indus + residential + cityunkn + centcity + lndens + coast + as.factor(year) 
                , data = smoke)
-summary(mod3_lm, vcov = vcovHC(mod3_lm, type = "HC1"))
+summary(mod3, vcov = vcovHC(mod3, type = "HC1"))
 

@@ -86,7 +86,7 @@
 	\begin{frame}{Design vs. model-based causal inference - 2}
 		\begin{itemize}
 			\item there is different takes on which approach allows causal estimates cf. (\cite{Card2022, Heckman2008})
-			\item finite populations without random sampling are tricky, especially when there is no random treatment (\cite{Sterba2009, Abadie2020})
+			\item finite populations without random sampling are tricky, especially when there is no random treatment (\cite{Sterba2009, Abadie2020b})
 			\item here, structural causal models can help to explicitely formulate the data generating process (but not just in such cases) (\cite{Cinelli2022})
 		\end{itemize}
 	\end{frame}
@@ -118,8 +118,8 @@
 	\end{frame}
 
 	\begin{frame}{Definition}
-		\textbf{Quasi- / natural experiment:} \\ \vspace*{.25cm}
-		A setting where a subpopulation is treated with an intervention of sorts that occurs due to non-random assignment processes (outside of the researchers influence if its called \textit{natural}). \\ \\
+		\textbf{Quasi- / natural experiment:} \newline \vspace*{.25cm}
+		A setting where a subpopulation is treated with an intervention of sorts that occurs due to non-random assignment processes (outside of the researchers influence if its called \textit{natural}). \newline
 		\onslide<2>{\textbf{However:} "First, it is worth noting that the label “natural experiment” is perhaps unfortunate. As we shall see, the social and political forces that give rise to as-if random assignment of interventions are not generally “natural” in any ordinary sense of that term. 15 Second, natural experiments are observational studies, not true experiments, again, because they lack an experimental manipulation. In sum, natural experiments are neither natural nor experiments. (\cite{Dunning2012})}
 	\end{frame}
 
@@ -456,12 +456,13 @@
 			\end{center}
 		\end{frame}
 
-			\begin{frame}{notation}
-				Even worse, a positive but staggered slope change, can even change the sign of the DD estimate. \\
-				\centering 
-					\animategraphics[width=.7\textwidth,controls]{10}{GoodmanBacon-}{0}{531}
-					\newline \tiny{Staggered treatment with linear slope change. Image source: \cite{Goodman-Bacon2021}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
-			\end{frame}
+		\begin{frame}{notation}
+			Even worse, a positive but staggered slope change, can even change the sign of the DD estimate. \\
+			\begin{centering}
+				\animategraphics[width=.7\textwidth,controls]{10}{GoodmanBacon-}{0}{531}
+				\newline \tiny{Staggered treatment with linear slope change. Image source: \cite{Goodman-Bacon2021}, see also his  \href{https://twitter.com/agoodmanbacon/status/1039126592604303360}{\underline{\smash{tweet-thread}}}}
+			\end{centering}
+		\end{frame}
 
 	\subsection{solutions}
 		\begin{frame}{Proposed solutions I}
