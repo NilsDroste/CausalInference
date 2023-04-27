@@ -46,7 +46,7 @@ instrFtest # we clearly reject the NULL of irrelevance
 Hausman_reg <- lm(lnso2med ~ lnengopc + lnenergy + lngdp + lngdpsq + polity + lnliter + area + indust + residential + lndens + cencity + coast + as.factor(year) + residuals(first_stage), data=so2)
 summary(Hausman_reg)
 HausWutest <- waldtest(Hausman_reg,.~.-residuals(first_stage))
-HausWutest # we clearly reject endogeneity
+HausWutest # we clearly find endogeneity in the instrumented OLS (pointing to biased error terms)
 
 # there also is a Sargan test for instrument validity, see e.g.
 # http://eclr.humanities.manchester.ac.uk/index.php/IV_in_R or
@@ -75,6 +75,7 @@ ivmod5 <-
 summary(ivmod5, vcov=vcovHC(ivmod5,method = "arellano")) # this fails.
 # check https://stackoverflow.com/questions/11404141/problems-with-within-and-random-models-in-plm-package
 # one potential failure is ill specified data.
+
 
 
 # So, lets assess the data and the models graphically ----

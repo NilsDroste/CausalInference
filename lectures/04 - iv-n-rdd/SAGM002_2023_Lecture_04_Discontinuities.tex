@@ -29,7 +29,7 @@
 \subtitle{}
 \date{dd mm yyyy}
 \institute{Lund University\\Department for Political Science}
-\newcommand{\conference}{2022 ClimBEco course}
+\newcommand{\conference}{2023 ClimBEco course}
 
 % bibliography
 \addbibresource{C:/Users/NILSDR~1/Dropbox/Dokumente/references/library.bib}
@@ -43,7 +43,15 @@
 
 % ------------------------------------------------------------------------------
 \section{Introduction}
-
+	\begin{frame}{Introduction}
+		\textbf{\textit{Synopsis}}: Today, we will be looking into situations where exogenous variations can be exploited for a quasi-random treatment assignment \\ \vspace*{.25cm}
+		In particular, we will develop an understanding of\\ \vspace*{.25cm}
+		\begin{itemize}
+			\item<2-> instrumental variables approaches
+			\item<3> regression discontinuity designs
+		\end{itemize}
+	\end{frame}
+	
 
 % ------------------------------------------------------------------------------
 \section{Instrumental Variables}
@@ -130,8 +138,8 @@
 			\begin{itemize}
 				\item []
 				\begin{itemize}
-					\item<3-> here the LATE is given by $P(1) \cdot E \lbrack Y_i(1) - Y_i(0)|D_i(1) = 1 \rbrack $
-					\item<4-> as long as participation $P(1)>P(0)$ and $D_i(1) \geq D_i(0) \forall i$, aka monotonic \\ (or $\leq$, respectively)
+					\item<3-> here the LATT (!) is given by $P(z) \cdot E \lbrack Y_i(1) - Y_i(0)|D_i(z) = 1 \rbrack $
+					\item<4-> as long as participation $P(z)>P(0)$ and $D_i(z) \geq D_i(0) \forall i$, aka monotonic \\ (or $\leq$, respectively)
 				\end{itemize}
 			\end{itemize}
 			\vspace*{.25cm}
@@ -154,7 +162,7 @@
 			\begin{itemize}
 				\item<2->  "\textit{if people are more likely, on average, to participate given Z = w than given Z = z, then anyone who would participate given Z = z must also participate given Z = w}" (\cite{Imbens1994}) \\ \vspace*{.15cm}
 				\onslide<3->{$\rightarrow$ assumes existence of only one of compliers or defiers, e.g. \textit{no one} defies}
-				\item<4-> allows valid estimate of LATE, but may not always be realistic
+				\item<4-> allows valid estimate of LATE / LATT, but may not always be realistic
 			\end{itemize}
 		\end{frame}
 
@@ -418,9 +426,9 @@
 			\end{itemize}
 		\end{frame}
 
-		\begin{frame}{intermediate summary}
+		\begin{frame}{summary}
 			Regression discontinuity designs \\ \vspace*{.5cm}
-			\begin{itemize}
+			\begin{itemize} 
 				\item identify a causal effect at a (quasi-)randomly occuring break point that introduces treatment
 				\item are the youngest "classical" causal inference methods and seen as favorable
 				\item use breaks that can occur in space, time, institutions, etc. pp.
